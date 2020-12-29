@@ -1,3 +1,6 @@
+App Features
+___________
+
 1. Main page will be a simple authentication form
 2. Login managed by auth0
 3. User will have a dashboard with workout stats visuallized by d3.js
@@ -10,3 +13,27 @@
 5. User can add custom exercises > link to videos
 6. User can start a new workout which will manage reps and sets and rests
 7. Ability to share workouts, export and import workouts with friends
+8. CMS to maintain a blog
+
+Technology
+_________
+
+Frontend: NextJS
+Authentication: Auth0
+Functions: Google App Engine
+Database: Firebase
+CMS: Sanity.io
+
+Deisgn Workflow
+_______________
+
+1. Hookup firebase storage and authentication for users, simple login page
+2. Create dashboard layout and styling
+3. Implement functions in google app engine for CRUD operations
+4. Implement data fetching and updating in Next
+5. Create database structure within firebase
+6. Incrementaly add the different app features
+7. Add dynamic visualizations with d3
+8. Add export/import feature
+9. Add CMS and blog with SSG
+10. Launch on Reddit
