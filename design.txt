@@ -1,0 +1,12 @@
+1. Main page will be a simple authentication form
+2. Login managed by auth0
+3. User will have a dashboard with workout stats visuallized by d3.js
+4. User can add new workouts
+    - Add exercises
+    - Add sets and reps
+    - Add rest times
+    - Add periodization
+    - Automatic weight/set increase with manual override option
+5. User can add custom exercises > link to videos
+6. User can start a new workout which will manage reps and sets and rests
+7. Ability to share workouts, export and import workouts with friends
