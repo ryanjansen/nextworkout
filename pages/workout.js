@@ -1,4 +1,5 @@
 import { useForm } from "react-hook-form";
+import Link from "next/link";
 
 function WorkoutForm() {
   const { register, handleSubmit, watch, errors } = useForm();
@@ -36,7 +37,7 @@ function WorkoutForm() {
         label {
           display: block;
           margin-top: 3rem;
-          font-size: 30px;
+          font-size: 25px;
         }
 
         .btn {
@@ -63,16 +64,21 @@ function WorkoutForm() {
 
 export default function Workout() {
   return (
-    <div className="container">
-      <WorkoutForm />
+    <>
+      <Link href="/">
+        <a>Home</a>
+      </Link>
+      <div className="container">
+        <WorkoutForm />
 
-      <style jsx>{`
-        .container {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-      `}</style>
-    </div>
+        <style jsx>{`
+          .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+          }
+        `}</style>
+      </div>
+    </>
   );
 }
