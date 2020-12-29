@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import Link from "next/link";
 
 export default function App() {
-  const { register, handleSubmit, watch, errors } = useForm();
+  const { register, handleSubmit, errors } = useForm();
   const onSubmit = (data) => console.log(data);
 
   return (
