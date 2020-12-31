@@ -1,0 +1,9 @@
+type Exercise {
+    name: String! @unique
+    category: String!
+    bodypart: String!
+}
+
+type Query {
+    exercises: [Exercise!]
+}
