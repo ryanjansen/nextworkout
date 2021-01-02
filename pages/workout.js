@@ -2,19 +2,35 @@ import { useForm } from "react-hook-form";
 import Layout from "../components/layout";
 import GraphQLClient from "../utils/graphQLClient";
 import { gql } from "graphql-request";
+import { useState } from "react";
+import WorkoutTable from "../components/workoutTable";
 
 export default function Workout({ data }) {
   const { register, handleSubmit, errors } = useForm();
+  const [exercises, setExercises] = useState([
+    { name: "Bench Press", weight: "65kg", reps: 5, sets: 3 },
+  ]);
+  const [successMessage, setSuccessMessage] = useState("");
 
   console.log(data);
 
-  const onSubmit = (data) => console.log(data);
+  const onSubmit = (newExercise) => {
+    setExercises([...exercises, newExercise]);
+  };
+
+  const handleAddWorkout = () => {
+    setExercises([]);
+    setSuccessMessage("Workout Added!");
+    setTimeout(() => {
+      setSuccessMessage("");
+    }, 2000);
+  };
 
   return (
     <Layout>
       <form onSubmit={handleSubmit(onSubmit)}>
         <label>Exercise</label>
-        <select name="exercise" ref={register()}>
+        <select name="name" ref={register()}>
           {data.exercises.data.map((exercise) => {
             console.log(exercise);
             return (
@@ -42,7 +58,7 @@ export default function Workout({ data }) {
         <style jsx>{`
           input {
             display: block;
-            width: 500px;
+            width: 100%;
             margin: 5px 0;
             font-size: 20px;
             padding: 10px 5px;
@@ -78,16 +94,18 @@ export default function Workout({ data }) {
             border-radius: 5px;
             padding: 5px;
             margin-top: 20px;
-            width: 500px;
+            width: 100%;
             font-size: 20px;
             border: 1px solid black;
             height: 34px;
             -webkit-apperance: none;
             -moz-appearance: none;
-            appearance: none;
           }
         `}</style>
       </form>
+
+      <WorkoutTable exercises={exercises} handleAddWorkout={handleAddWorkout} />
+      {successMessage}
     </Layout>
   );
 }
