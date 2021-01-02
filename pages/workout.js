@@ -1,10 +1,7 @@
 import { useForm } from "react-hook-form";
 import Layout from "../components/layout";
 import GraphQLClient from "../utils/graphQLClient";
-import useSWR from "swr";
 import { gql } from "graphql-request";
-import { useState, useEffect } from "react";
-import GetExercises from "../utils/getExercises";
 
 export default function Workout({ data }) {
   const { register, handleSubmit, errors } = useForm();
@@ -17,8 +14,16 @@ export default function Workout({ data }) {
     <Layout>
       <form onSubmit={handleSubmit(onSubmit)}>
         <label>Exercise</label>
-        <input name="exercise" ref={register({ required: true })} />
-        {errors.exercise && <span>This field is required</span>}
+        <select name="exercise" ref={register()}>
+          {data.exercises.data.map((exercise) => {
+            console.log(exercise);
+            return (
+              <option key={exercise.name} value={exercise.name}>
+                {exercise.name}
+              </option>
+            );
+          })}
+        </select>
 
         <label>Sets</label>
         <input name="sets" ref={register({ required: true })} />
@@ -37,15 +42,17 @@ export default function Workout({ data }) {
         <style jsx>{`
           input {
             display: block;
+            width: 500px;
             margin: 5px 0;
             font-size: 20px;
             padding: 10px 5px;
             border-radius: 5px;
             border: 1px solid black;
           }
+
           label {
             display: block;
-            margin-top: 3rem;
+            margin-top: 2rem;
             font-size: 25px;
           }
 
@@ -65,6 +72,19 @@ export default function Workout({ data }) {
             cursor: pointer;
             background-color: black;
             color: white;
+          }
+
+          select {
+            border-radius: 5px;
+            padding: 5px;
+            margin-top: 20px;
+            width: 500px;
+            font-size: 20px;
+            border: 1px solid black;
+            height: 34px;
+            -webkit-apperance: none;
+            -moz-appearance: none;
+            appearance: none;
           }
         `}</style>
       </form>
@@ -94,5 +114,8 @@ export async function getServerSideProps() {
   } catch (error) {
     console.error(error);
     const data = null;
+    return {
+      props: { data },
+    };
   }
 }
