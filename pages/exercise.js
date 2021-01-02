@@ -118,9 +118,46 @@ export default function Exercise() {
             {exercises.map((exercise) => (
               <li key={exercise._id} className="exercise">
                 <span>{exercise.name}</span>
-                <a>Delete</a>
+                <a className="btn">Delete</a>
               </li>
             ))}
+            <style jsx>
+              {`
+                ul {
+                  padding-left: 0px;
+                }
+                .exercise {
+                  display: flex;
+                  width: 60vw;
+                  justify-content: space-between;
+                  margin: 5px;
+                  border: 2px black;
+                  border-style: none none dashed none;
+                  padding-bottom: 5px;
+                }
+
+                span {
+                  font-size: 25px;
+                }
+                .btn {
+                  background-color: white;
+                  border: 1px solid black;
+                  color: black;
+                  padding: 10px 32px;
+                  text-align: center;
+                  text-decoration: none;
+                  font-size: 16px;
+                  margin-left: 1rem;
+                  transition: all 0.2s;
+                  border-radius: 5px;
+                }
+                .btn:hover {
+                  cursor: pointer;
+                  background-color: red;
+                  color: white;
+                }
+              `}
+            </style>
           </ul>
         ) : (
           <div>Loading...</div>
