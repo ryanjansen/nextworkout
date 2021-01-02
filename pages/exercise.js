@@ -117,12 +117,25 @@ export default function Exercise() {
           <ul>
             {exercises.map((exercise) => (
               <li key={exercise._id} className="exercise">
-                <span>{exercise.name}</span>
-                <a className="btn">Delete</a>
+                <div className="right-contents">
+                  <div className="name">{exercise.name}</div>
+                  <div className="sub-name">{exercise.category}</div>
+                  <div className="sub-name">{exercise.bodypart}</div>
+                </div>
+
+                <div className="left-contents">
+                  <a className="btn edit">Edit</a>
+                  <a className="btn delete">Delete</a>
+                </div>
               </li>
             ))}
             <style jsx>
               {`
+                .right-contents {
+                }
+                .left-contents {
+                  margin-top: 30px;
+                }
                 ul {
                   padding-left: 0px;
                 }
@@ -136,24 +149,33 @@ export default function Exercise() {
                   padding-bottom: 5px;
                 }
 
-                span {
+                .sub-name {
+                  font-size: 20 px;
+                }
+
+                .name {
                   font-size: 25px;
                 }
                 .btn {
                   background-color: white;
                   border: 1px solid black;
                   color: black;
-                  padding: 10px 32px;
                   text-align: center;
                   text-decoration: none;
                   font-size: 16px;
                   margin-left: 1rem;
                   transition: all 0.2s;
                   border-radius: 5px;
+                  padding: 10px;
                 }
-                .btn:hover {
+                .delete:hover {
                   cursor: pointer;
                   background-color: red;
+                  color: white;
+                }
+                .edit:hover {
+                  cursor: pointer;
+                  background-color: green;
                   color: white;
                 }
               `}
