@@ -3,25 +3,24 @@ import Layout from "../components/layout";
 import GraphQLClient from "../utils/graphQLClient";
 import { gql } from "graphql-request";
 import { useState, useEffect } from "react";
-import GetExercises from "../utils/getExercises";
+import useSWR from "swr";
+import { getExercisesQuery } from "../graphql/queries";
 
-export default function Exercise() {
+const fetcher = async (query) => await GraphQLClient.request(query);
+
+const Exercise = () => {
   const [exercises, setExercises] = useState(null);
 
-  const { data, error } = GetExercises();
+  const { data, error } = useSWR(getExercisesQuery, fetcher);
+
+  console.log(data);
+  console.error(error);
 
   useEffect(() => {
     if (data) {
-      setExercises(data.exercises.data);
+      setExercises(data.allExercises.data);
     }
   }, [data]);
-
-  if (error)
-    return (
-      <Layout>
-        <div>Failed to Load</div>
-      </Layout>
-    );
 
   const { register, handleSubmit, errors } = useForm();
   const onSubmit = handleSubmit(async (exercise) => {
@@ -141,7 +140,7 @@ export default function Exercise() {
                 }
                 .exercise {
                   display: flex;
-                  width: 60vw;
+                  width: 100%;
                   justify-content: space-between;
                   margin: 5px;
                   border: 2px black;
@@ -187,4 +186,6 @@ export default function Exercise() {
       </div>
     </Layout>
   );
-}
+};
+
+export default Exercise;

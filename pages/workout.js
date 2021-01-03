@@ -2,20 +2,81 @@ import { useForm } from "react-hook-form";
 import Layout from "../components/layout";
 import GraphQLClient from "../utils/graphQLClient";
 import { gql } from "graphql-request";
+import { getExercisesQuery } from "../graphql/queries";
 import { useState } from "react";
 import WorkoutTable from "../components/workoutTable";
 
 export default function Workout({ data }) {
+  if (!data) {
+    return <div>Loading...</div>;
+  }
+
+  async function main() {
+    const mutation = gql`
+      mutation AddWorkout(
+        $name: String!
+        $userID: ID!
+        $exerciseList: [ExerciseInput]!
+      ) {
+        createWorkout(
+          data: {
+            name: $name
+            user: { connect: $userID }
+            exercises: { create: $exerciseList }
+          }
+        ) {
+          _id
+          name
+          user {
+            _id
+          }
+          exercises {
+            data {
+              exerciseData {
+                _id
+                name
+                category
+                bodypart
+              }
+              sets {
+                reps
+                weight
+              }
+            }
+          }
+        }
+      }
+    `;
+
+    const variables = {
+      name: "Second ",
+      userID: "286615495578223105",
+      exerciseList: [
+        {
+          exerciseData: { connect: "286615547760607751" },
+          sets: [
+            { reps: 30, weight: 40 },
+            { reps: 50, weight: 10 },
+          ],
+        },
+      ],
+    };
+    try {
+      const data = await GraphQLClient.request(mutation, variables);
+      console.log(data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   const { register, handleSubmit, errors } = useForm();
   const [exercises, setExercises] = useState([
     { name: "Bench Press", weight: "65kg", reps: 5, sets: 3 },
   ]);
   const [successMessage, setSuccessMessage] = useState("");
 
-  console.log(data);
-
-  const onSubmit = (newExercise) => {
-    setExercises([...exercises, newExercise]);
+  const onSubmit = () => {
+    main();
   };
 
   const handleAddWorkout = () => {
@@ -28,10 +89,12 @@ export default function Workout({ data }) {
 
   return (
     <Layout>
+      <button onClick={onSubmit}>Test</button>
+      <h1>Add Workout</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
         <label>Exercise</label>
         <select name="name" ref={register()}>
-          {data.exercises.data.map((exercise) => {
+          {data.allExercises.data.map((exercise) => {
             console.log(exercise);
             return (
               <option key={exercise.name} value={exercise.name}>
@@ -111,21 +174,8 @@ export default function Workout({ data }) {
 }
 
 export async function getServerSideProps() {
-  const query = gql`
-    query GetExercises {
-      exercises {
-        data {
-          _id
-          name
-          category
-          bodypart
-        }
-      }
-    }
-  `;
-
   try {
-    const data = await GraphQLClient.request(query);
+    const data = await GraphQLClient.request(getExercisesQuery);
     return {
       props: { data },
     };
