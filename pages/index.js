@@ -4,7 +4,8 @@ import styles from "../styles/Home.module.css";
 import auth0 from "../utils/auth0";
 import Layout from "../components/layout";
 
-export default function Home({ user }) {
+export default function Home() {
+  const user = undefined;
   return (
     <Layout>
       <div className={styles.container}>
@@ -62,11 +63,11 @@ export default function Home({ user }) {
   );
 }
 
-export const getServerSideProps = async ({ req, res }) => {
-  const session = await auth0.getSession(req);
-  if (session) {
-    return { props: { user: session.user } };
-  } else {
-    return { props: { user: null } };
-  }
-};
+// export const getServerSideProps = async ({ req, res }) => {
+//   const session = await auth0.getSession(req);
+//   if (session) {
+//     return { props: { user: session.user } };
+//   } else {
+//     return { props: { user: null } };
+//   }
+// };

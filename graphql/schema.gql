@@ -1,4 +1,5 @@
 type User {
+  authSub: String!
   username: String!
   email: String!
   exercises: [ExerciseData] @relation
@@ -34,4 +35,5 @@ type Query {
   allUsers: [User]
   allExercises: [ExerciseData]
   allWorkouts: [Workout]
+  getUserByAuthSub(authSub: String!): User
 }

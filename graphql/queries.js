@@ -12,4 +12,20 @@ const getExercisesQuery = gql`
   }
 `;
 
-export { getExercisesQuery };
+const getUser = (authSub) => {
+  const query = gql`
+    query getUser($authSub: String!) {
+      getUserByAuthSub(authSub: $authSub) {
+        _id
+      }
+    }
+  `;
+
+  const variables = {
+    authSub,
+  };
+
+  return { query, variables };
+};
+
+export { getUser, getExercisesQuery };

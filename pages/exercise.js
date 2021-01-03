@@ -8,13 +8,19 @@ import { getExercisesQuery } from "../graphql/queries";
 
 const fetcher = async (query) => await GraphQLClient.request(query);
 
+const test = async () => {
+  const profile = await fetch("/api/me");
+  if (profile.ok) {
+    console.log(await profile.json());
+  }
+};
+
+test();
+
 const Exercise = () => {
   const [exercises, setExercises] = useState(null);
 
   const { data, error } = useSWR(getExercisesQuery, fetcher);
-
-  console.log(data);
-  console.error(error);
 
   useEffect(() => {
     if (data) {
