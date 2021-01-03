@@ -5,119 +5,125 @@ import { gql } from "graphql-request";
 import { getExercisesQuery } from "../graphql/queries";
 import { useState } from "react";
 import WorkoutTable from "../components/workoutTable";
+import { createWorkout } from "../graphql/mutations";
+import auth0 from "../utils/auth0";
 
-export default function Workout({ data }) {
-  if (!data) {
-    return <div>Loading...</div>;
-  }
+export default function Workout({ exercises, user }) {
+  console.log(user);
+  const { register, handleSubmit, errors } = useForm();
 
-  async function main() {
-    const mutation = gql`
-      mutation AddWorkout(
-        $name: String!
-        $userID: ID!
-        $exerciseList: [ExerciseInput]!
-      ) {
-        createWorkout(
-          data: {
-            name: $name
-            user: { connect: $userID }
-            exercises: { create: $exerciseList }
-          }
-        ) {
-          _id
-          name
-          user {
-            _id
-          }
-          exercises {
-            data {
-              exerciseData {
-                _id
-                name
-                category
-                bodypart
-              }
-              sets {
-                reps
-                weight
-              }
-            }
-          }
-        }
-      }
-    `;
+  const [selectedExercise, setSelectedExercise] = useState("");
+  const [exerciseSets, setExerciseSets] = useState([]);
+  const [workout, setWorkout] = useState([]);
 
-    const variables = {
-      name: "Second ",
-      userID: "286615495578223105",
-      exerciseList: [
-        {
-          exerciseData: { connect: "286615547760607751" },
-          sets: [
-            { reps: 30, weight: 40 },
-            { reps: 50, weight: 10 },
-          ],
-        },
-      ],
-    };
+  const onSubmit = (data) => {
+    console.log(data);
+    if (!selectedExercise) {
+      const exerciseData = exercises.find((exercise) => {
+        return exercise.name === data.exercise;
+      });
+      console.log(exerciseData);
+      setSelectedExercise(exerciseData);
+    } else {
+      const reps = parseFloat(data.reps);
+      const weight = parseFloat(data.weight);
+      setExerciseSets([...exerciseSets, { reps, weight }]);
+    }
+  };
+
+  const handleAddToWorkout = () => {
+    // Transfer selected exercise and exercise sets to workout
+    console.log("clicked");
+    setWorkout([
+      ...workout,
+      {
+        name: selectedExercise.name,
+        exerciseID: selectedExercise._id,
+        sets: exerciseSets,
+      },
+    ]);
+    setSelectedExercise("");
+    setExerciseSets([]);
+  };
+
+  const handleCreateWorkout = async () => {
+    // Save workout to database
+
+    const { mutation, variables } = createWorkout(
+      "Greyskull LP D",
+      "286630730665034241",
+      workout
+    );
+
     try {
       const data = await GraphQLClient.request(mutation, variables);
       console.log(data);
+      setWorkout([]);
     } catch (error) {
       console.error(error);
     }
-  }
-
-  const { register, handleSubmit, errors } = useForm();
-  const [exercises, setExercises] = useState([
-    { name: "Bench Press", weight: "65kg", reps: 5, sets: 3 },
-  ]);
-  const [successMessage, setSuccessMessage] = useState("");
-
-  const onSubmit = () => {
-    main();
-  };
-
-  const handleAddWorkout = () => {
-    setExercises([]);
-    setSuccessMessage("Workout Added!");
-    setTimeout(() => {
-      setSuccessMessage("");
-    }, 2000);
   };
 
   return (
     <Layout>
-      <button onClick={onSubmit}>Test</button>
       <h1>Add Workout</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <label>Exercise</label>
-        <select name="name" ref={register()}>
-          {data.allExercises.data.map((exercise) => {
-            console.log(exercise);
-            return (
-              <option key={exercise.name} value={exercise.name}>
-                {exercise.name}
-              </option>
-            );
-          })}
-        </select>
+        {!selectedExercise && (
+          <>
+            <label>Select Exercise</label>
+            <select name="exercise" ref={register()}>
+              {exercises.map((exercise) => {
+                return (
+                  <option key={exercise.name} value={exercise.name}>
+                    {exercise.name}
+                  </option>
+                );
+              })}
+            </select>
+          </>
+        )}
 
-        <label>Sets</label>
-        <input name="sets" ref={register({ required: true })} />
-        {errors.sets && <span>This field is required</span>}
+        {selectedExercise && (
+          <>
+            <h2>{selectedExercise.name}</h2>
 
-        <label>Reps</label>
-        <input name="reps" ref={register({ required: true })} />
-        {errors.reps && <span>This field is required</span>}
+            {exerciseSets.length !== 0 && (
+              <table>
+                <thead>
+                  <tr>
+                    <th>Set</th>
+                    <th>Reps</th>
+                    <th>Weight</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {exerciseSets.map((exercise, index) => {
+                    return (
+                      <tr key={index}>
+                        <td>{index + 1}</td>
+                        <td>{exercise.reps}</td>
+                        <td>{exercise.weight}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            )}
 
-        <label>Weight</label>
-        <input name="weight" ref={register({ required: true })} />
-        {errors.weight && <span>This field is required</span>}
+            <label>Reps</label>
+            <input name="reps" ref={register({ required: true })} />
+            {errors.reps && <span>This field is required</span>}
 
-        <input className="btn" type="submit" />
+            <label>Weight</label>
+            <input name="weight" ref={register({ required: true })} />
+            {errors.weight && <span>This field is required</span>}
+          </>
+        )}
 
+        <input className="btn" type="submit" value="Add" />
+        {selectedExercise && (
+          <button onClick={handleAddToWorkout}>Add to workout</button>
+        )}
         <style jsx>{`
           input {
             display: block;
@@ -149,7 +155,7 @@ export default function Workout({ data }) {
 
           .btn:hover {
             cursor: pointer;
-            background-color: black;
+            background-color: red;
             color: white;
           }
 
@@ -167,23 +173,27 @@ export default function Workout({ data }) {
         `}</style>
       </form>
 
-      <WorkoutTable exercises={exercises} handleAddWorkout={handleAddWorkout} />
-      {successMessage}
+      <WorkoutTable
+        workout={workout}
+        handleCreateWorkout={handleCreateWorkout}
+      />
     </Layout>
   );
 }
 
-export async function getServerSideProps() {
+export async function getServerSideProps({ req, res }) {
   try {
+    const user = await auth0.getSession(req);
     const data = await GraphQLClient.request(getExercisesQuery);
+    const exercises = data.allExercises.data;
     return {
-      props: { data },
+      props: { exercises, user },
     };
   } catch (error) {
     console.error(error);
-    const data = null;
+    const exercises = null;
     return {
-      props: { data },
+      props: { exercises },
     };
   }
 }

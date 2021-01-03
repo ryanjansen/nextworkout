@@ -49,5 +49,59 @@ const createExercise = (userID, name, category, bodypart) => {
   return { mutation, variables };
 };
 
-// const createWorkout = (name, userID, )
-export { createUser, createExercise };
+const createWorkout = (name, userID, eList) => {
+  const mutation = gql`
+    mutation AddWorkout(
+      $name: String!
+      $userID: ID!
+      $exerciseList: [ExerciseInput]!
+    ) {
+      createWorkout(
+        data: {
+          name: $name
+          user: { connect: $userID }
+          exercises: { create: $exerciseList }
+        }
+      ) {
+        _id
+        name
+        user {
+          _id
+          username
+        }
+        exercises {
+          data {
+            exerciseData {
+              _id
+              name
+              category
+              bodypart
+            }
+            sets {
+              reps
+              weight
+            }
+          }
+        }
+      }
+    }
+  `;
+
+  const exerciseList = eList.map((exercise) => {
+    const result = {
+      exerciseData: { connect: exercise.exerciseID },
+      sets: exercise.sets,
+    };
+    return result;
+  });
+
+  const variables = {
+    name,
+    userID,
+    exerciseList,
+  };
+
+  return { mutation, variables };
+};
+
+export { createUser, createExercise, createWorkout };

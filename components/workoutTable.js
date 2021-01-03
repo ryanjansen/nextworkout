@@ -1,26 +1,11 @@
-const workoutTable = ({ exercises, handleAddWorkout }) => {
-  const generateSets = (exercise) => {
-    console.log(exercise);
-    const sets = [];
-    for (let i = 0; i < exercise.sets; i++) {
-      sets.push(
-        <tr>
-          <td>{i + 1}</td>
-          <td>{exercise.weight}</td>
-          <td>{exercise.reps}</td>
-        </tr>
-      );
-    }
-    console.log(sets);
-    return sets;
-  };
-  if (exercises.length !== 0) {
+const workoutTable = ({ workout, handleCreateWorkout }) => {
+  if (workout.length !== 0) {
     return (
       <div className="container">
         <h1>New Workout</h1>
-        {exercises.map((exercise) => {
+        {workout.map((exercise) => {
           return (
-            <div className="exercise" key={exercise.name}>
+            <div className="exercise" key={exercise.exerciseID}>
               <h2>{exercise.name}</h2>
               <table>
                 <thead>
@@ -30,13 +15,23 @@ const workoutTable = ({ exercises, handleAddWorkout }) => {
                     <th>Reps</th>
                   </tr>
                 </thead>
-                <tbody>{generateSets(exercise)}</tbody>
+                <tbody>
+                  {exercise.sets.map((exercise, index) => {
+                    return (
+                      <tr key={index}>
+                        <td>{index + 1}</td>
+                        <td>{exercise.reps}</td>
+                        <td>{exercise.weight}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
               </table>
             </div>
           );
         })}
 
-        <button onClick={handleAddWorkout}>Save Workout</button>
+        <button onClick={handleCreateWorkout}>Save Workout</button>
         <style jsx>{`
           .container {
             margin: 20px 0;
