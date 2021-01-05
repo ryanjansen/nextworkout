@@ -28,4 +28,34 @@ const getUser = (authSub) => {
   return { query, variables };
 };
 
-export { getUser, getExercisesQuery };
+const getWorkoutsByUser = (userID) => {
+  const query = gql`
+    query getWorkoutsByUser($userID: ID!) {
+      findUserByID(id: $userID) {
+        workouts {
+          data {
+            name
+            _id
+            exercises {
+              data {
+                exerciseData {
+                  name
+                }
+                sets {
+                  reps
+                  weight
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  `;
+
+  const variables = { userID };
+
+  return { query, variables };
+};
+
+export { getUser, getExercisesQuery, getWorkoutsByUser };

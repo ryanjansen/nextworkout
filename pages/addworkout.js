@@ -1,7 +1,6 @@
 import { useForm } from "react-hook-form";
 import Layout from "../components/layout";
 import GraphQLClient from "../utils/graphQLClient";
-import { gql } from "graphql-request";
 import { getExercisesQuery } from "../graphql/queries";
 import { useState } from "react";
 import WorkoutTable from "../components/workoutTable";
@@ -50,8 +49,8 @@ export default function Workout({ exercises, user }) {
     // Save workout to database
 
     const { mutation, variables } = createWorkout(
-      "Greyskull LP D",
-      "286630730665034241",
+      "Testing Wou",
+      user.user.userID,
       workout
     );
 

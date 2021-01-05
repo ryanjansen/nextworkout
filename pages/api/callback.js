@@ -1,17 +1,17 @@
-import CookieSessionStoreSettings from "@auth0/nextjs-auth0/dist/session/cookie-store/settings";
 import auth0 from "../../utils/auth0";
 import { getUser } from "../../graphql/queries";
 import GraphQLClient from "../../utils/graphQLClient";
-import { get } from "react-hook-form";
 import { createUser } from "../../graphql/mutations";
 
 export default async function callback(req, res) {
   try {
     await auth0.handleCallback(req, res, {
       onUserLoaded: async (req, res, session, state) => {
-        const { query, variables } = getUser(jsession.user.sub);
+        //get user from faunaDB
+        const { query, variables } = getUser(session.user.sub);
         const faunaUser = await GraphQLClient.request(query, variables);
         if (faunaUser.getUserByAuthSub) {
+          // If user exists, get user id and place within session
           return {
             ...session,
             user: {
@@ -20,6 +20,7 @@ export default async function callback(req, res) {
             },
           };
         } else {
+          // if not, create user
           const { mutation, variables } = createUser(
             session.user.sub,
             session.user.nickname,

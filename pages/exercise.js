@@ -36,7 +36,7 @@ const Exercise = () => {
         $category: String!
         $bodypart: String!
       ) {
-        createExercise(
+        createExerciseData(
           data: { name: $name, category: $category, bodypart: $bodypart }
         ) {
           name

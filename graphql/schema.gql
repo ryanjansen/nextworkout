@@ -8,7 +8,7 @@ type User {
 
 type ExerciseData {
   user: User!
-  name: String! @unique
+  name: String!
   category: String!
   bodypart: String!
 }
