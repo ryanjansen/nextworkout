@@ -3,7 +3,7 @@ import Link from "next/link";
 export default function Nav() {
   return (
     <nav>
-      <div>
+      <div className="left">
         <Link href="/">
           <a className="nav-link">Home</a>
         </Link>
@@ -12,6 +12,9 @@ export default function Nav() {
         </Link>
         <Link href="/workout">
           <a className="nav-link">Workouts</a>
+        </Link>
+        <Link href="/addworkout">
+          <a className="nav-link">Add Workout</a>
         </Link>
         <Link href="/start">
           <a className="nav-link">Start Workout</a>
@@ -22,6 +25,15 @@ export default function Nav() {
         <Link href="/stats">
           <a className="nav-link">Exercise Stats</a>
         </Link>
+      </div>
+
+      <div className="right">
+        <a className="nav-link" href="/api/login">
+          Login
+        </a>
+        <a className="nav-link" href="/api/logout">
+          Logout
+        </a>
       </div>
 
       <style jsx>{`
@@ -42,6 +54,16 @@ export default function Nav() {
         .nav-link:hover {
           background-color: black;
           color: #ffff00;
+        }
+
+        .left {
+          display: inline-block;
+          float: left;
+        }
+
+        .right {
+          display: inline-block;
+          float: right;
         }
       `}</style>
     </nav>

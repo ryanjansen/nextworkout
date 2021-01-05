@@ -15,33 +15,21 @@ export default function Home() {
         </Head>
 
         <main className={styles.main}>
-          <h1 className={styles.title}>
-            {user ? (
-              `Welcome, ${user.nickname}`
-            ) : (
-              <a href="/api/login">Login</a>
-            )}
-          </h1>
+          <Link href="/exercise">
+            <a className="btn">Add Exercise</a>
+          </Link>
 
-          <p className={styles.description}>
-            <a href="/api/logout">Logout</a>
-          </p>
+          <Link href="/addworkout">
+            <a className="btn">Add Workout</a>
+          </Link>
         </main>
-
-        <Link href="/exercise">
-          <a className="btn">Add Exercise</a>
-        </Link>
-
-        <Link href="/workout">
-          <a className="btn">Add Workout</a>
-        </Link>
 
         <style jsx>{`
           .btn {
             display: inline-block;
              padding: 0.35em 1.2em;
              border: 0.1em solid #000000;
-             margin: 0 2em;
+             margin: 2em 2em;
              border-radius: 0.12em;
              box-sizing: border-box;
              text-decoration: none;

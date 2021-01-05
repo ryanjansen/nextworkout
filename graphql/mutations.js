@@ -1,9 +1,9 @@
 import { gql } from "graphql-request";
 
-const createUser = (user, email) => {
+const createUser = (authSub, user, email) => {
   const mutation = gql`
-    mutation AddUser($user: String!, $email: String!) {
-      createUser(data: { username: $user, email: $email }) {
+    mutation AddUser($authSub: String!, $user: String!, $email: String!) {
+      createUser(data: { authSub: $authSub, username: $user, email: $email }) {
         _id
         username
         email
@@ -11,7 +11,7 @@ const createUser = (user, email) => {
     }
   `;
 
-  const variables = { user, email };
+  const variables = { authSub, user, email };
 
   return { mutation, variables };
 };
