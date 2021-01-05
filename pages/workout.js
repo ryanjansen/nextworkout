@@ -5,7 +5,7 @@ import { useState } from "react";
 import auth0 from "../utils/auth0";
 
 export default function Workout({ workouts, user }) {
-  console.log(workouts);
+  console.log("Workouts" + workouts);
   console.log(user);
   return (
     <Layout>
@@ -40,7 +40,7 @@ export default function Workout({ workouts, user }) {
   );
 }
 
-export async function getServerSideProps({ req }) {
+export async function getServerSideProps({ req, res }) {
   try {
     const session = await auth0.getSession(req);
     const { query, variables } = getWorkoutsByUser(session.user.userID);
@@ -51,10 +51,8 @@ export async function getServerSideProps({ req }) {
     };
   } catch (error) {
     console.error(error);
-    const workouts = null;
-    const user = null;
-    return {
-      props: { workouts, user },
-    };
+    res.writeHead(302, { Location: "/" });
+    res.end();
   }
+  return { props: {} };
 }

@@ -183,6 +183,10 @@ export default function Workout({ exercises, user }) {
 export async function getServerSideProps({ req, res }) {
   try {
     const user = await auth0.getSession(req);
+    if (!user) {
+      res.writeHead(302, { Location: "/" });
+      res.end();
+    }
     const data = await GraphQLClient.request(getExercisesQuery);
     const exercises = data.allExercises.data;
     return {
@@ -190,9 +194,8 @@ export async function getServerSideProps({ req, res }) {
     };
   } catch (error) {
     console.error(error);
-    const exercises = null;
-    return {
-      props: { exercises },
-    };
+    res.writeHead(302, { Location: "/" });
+    res.end();
   }
+  return { props: {} };
 }
