@@ -5,8 +5,8 @@ export default initAuth0({
   clientId: process.env.CLIENT_ID,
   clientSecret: process.env.CLIENT_SECRET,
   scope: "openid profile",
-  redirectUri: "https://dreamy-ptolemy-a51c68.netlify.app/api/callback",
-  postLogoutRedirectUri: "https://dreamy-ptolemy-a51c68.netlify.app/",
+  redirectUri: "https://pumpshock.com/api/callback",
+  postLogoutRedirectUri: "https://pumpshock.com",
   session: {
     // The secret used to encrypt the cookie.
     cookieSecret: process.env.COOKIE_SECRET,
