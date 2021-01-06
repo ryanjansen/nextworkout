@@ -5,6 +5,19 @@ import { useState } from "react";
 import auth0 from "../utils/auth0";
 import WorkoutRunner from "../components/workoutRunner";
 import { createCompletedWorkout, deleteWorkout } from "../graphql/mutations";
+import {
+  Container,
+  Heading,
+  Box,
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  Button,
+  Stack,
+} from "@chakra-ui/react";
 
 export default function Workout({ workouts, user }) {
   console.log(workouts);
@@ -12,12 +25,12 @@ export default function Workout({ workouts, user }) {
 
   const [runningWorkout, setRunningWorkout] = useState();
 
-  const startWorkout = (workout) => {
+  const handleStartWorkout = (workout) => {
     console.log(workout);
     setRunningWorkout(workout);
   };
 
-  const finishWorkout = async (date, timeTaken) => {
+  const handleFinishWorkout = async (date, timeTaken) => {
     const { mutation, variables } = createCompletedWorkout(
       runningWorkout.name,
       user.userID,
@@ -45,49 +58,85 @@ export default function Workout({ workouts, user }) {
     }
   };
 
+  const generateExerciseTable = (exercise) => {
+    return (
+      <Box p={3} key={exercise.name}>
+        <Heading size="m" mb={4}>
+          {exercise.name}
+        </Heading>
+        <Table variant="simple">
+          <Thead>
+            <Tr>
+              <Th>Set</Th>
+              <Th isNumeric>Reps</Th>
+              <Th isNumeric>Weight</Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            {exercise.sets.map((set, index) => {
+              return (
+                <Tr key={index}>
+                  <Td>{index + 1}</Td>
+                  <Td>{set.reps}</Td>
+                  <Td>{set.weight}</Td>
+                </Tr>
+              );
+            })}
+          </Tbody>
+        </Table>
+      </Box>
+    );
+  };
+
   return (
     <Layout user={user}>
-      <main>
+      <Container maxW="xl" centerContent>
+        <Heading size="3xl" mb={4} mt={4}>
+          Workouts
+        </Heading>
         {runningWorkout ? (
           <WorkoutRunner
             workout={runningWorkout}
-            finishWorkout={finishWorkout}
+            finishWorkout={handleFinishWorkout}
           />
         ) : (
           <>
             {workouts.map((workout) => {
               return (
-                <div className={"workout"} key={workout._id}>
-                  <h2>{workout.name}</h2>
+                <Box
+                  border="1px"
+                  borderColor="grey.200"
+                  p={6}
+                  m={10}
+                  key={workout._id}
+                >
+                  <Heading size="xl" mb={4}>
+                    {workout.name}
+                  </Heading>
                   {workout.exercises.map((exercise) => {
-                    return (
-                      <div className="exercise" key={exercise.name}>
-                        <h3>{exercise.name}</h3>
-                        {exercise.sets.map((set, index) => {
-                          return (
-                            <div className="set" key={index}>
-                              <h4>Set {index}</h4>
-                              <h5>
-                                {set.reps} reps x {set.weight} kg{" "}
-                              </h5>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    );
+                    return generateExerciseTable(exercise);
                   })}
-                  <button onClick={() => startWorkout(workout)}>
-                    Start Workout
-                  </button>
-                  <button onClick={() => handleDeleteWorkout(workout._id)}>
-                    Delete Workout
-                  </button>
-                </div>
+
+                  <Stack direction="row" spacing={4}>
+                    <Button
+                      colorScheme="green"
+                      onClick={() => handleStartWorkout(workout)}
+                    >
+                      Start Workout
+                    </Button>
+                    <Button
+                      colorScheme="red"
+                      onClick={() => handleDeleteWorkout(workout._id)}
+                    >
+                      Delete Workout
+                    </Button>
+                  </Stack>
+                </Box>
               );
             })}
           </>
         )}
-      </main>
+      </Container>
     </Layout>
   );
 }
