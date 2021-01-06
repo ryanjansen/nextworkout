@@ -1,26 +1,35 @@
 import { useForm } from "react-hook-form";
 import Layout from "../components/layout";
 import GraphQLClient from "../utils/graphQLClient";
-import { gql } from "graphql-request";
 import { useState, useEffect } from "react";
 import useSWR from "swr";
 import { getExercisesQuery } from "../graphql/queries";
+import { useRouter } from "next/router";
+import { createExercise, deleteExercise } from "../graphql/mutations";
 
-const fetcher = async (query) => await GraphQLClient.request(query);
-
-const test = async () => {
-  const profile = await fetch("/api/me");
-  if (profile.ok) {
-    console.log(await profile.json());
-  }
-};
-
-test();
+const fetcher = (...args) => GraphQLClient.request(...args);
 
 const Exercise = () => {
-  const [exercises, setExercises] = useState(null);
+  const router = useRouter();
+  const [exercises, setExercises] = useState();
+  const [user, setUser] = useState();
 
-  const { data, error } = useSWR(getExercisesQuery, fetcher);
+  const { error, data } = useSWR(getExercisesQuery, fetcher);
+
+  useEffect(() => {
+    const getUser = async () => {
+      const res = await fetch("/api/me");
+      console.log(res.status);
+      if (res.status == 200) {
+        const user = await res.json();
+        setUser(user);
+        console.log(user);
+      } else {
+        router.push("/");
+      }
+    };
+    getUser();
+  }, []);
 
   useEffect(() => {
     if (data) {
@@ -29,33 +38,44 @@ const Exercise = () => {
   }, [data]);
 
   const { register, handleSubmit, errors } = useForm();
+
   const onSubmit = handleSubmit(async (exercise) => {
-    const query = gql`
-      mutation addExercise(
-        $name: String!
-        $category: String!
-        $bodypart: String!
-      ) {
-        createExerciseData(
-          data: { name: $name, category: $category, bodypart: $bodypart }
-        ) {
-          name
-          category
-          bodypart
-        }
-      }
-    `;
+    const { mutation, variables } = createExercise(
+      user.userID,
+      exercise.name,
+      exercise.category,
+      exercise.bodypart
+    );
 
     try {
-      const newExercise = await GraphQLClient.request(query, exercise);
-      setExercises((exercises) => [...exercises, newExercise.createExercise]);
+      const newExercise = await GraphQLClient.request(mutation, variables);
+      setExercises((exercises) => [
+        ...exercises,
+        newExercise.createExerciseData,
+      ]);
     } catch (error) {
       console.error(error);
     }
   });
 
+  const handleDeleteExercise = async (exerciseID) => {
+    const { mutation, variables } = deleteExercise(exerciseID);
+
+    try {
+      const deletedExercise = await GraphQLClient.request(mutation, variables);
+      console.log(deletedExercise);
+      setExercises((exercises) => {
+        return exercises.filter(
+          (exercise) => exercise._id !== deletedExercise.deleteExerciseData._id
+        );
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
-    <Layout>
+    <Layout user={user}>
       <h1>Add Exercise</h1>
       <form onSubmit={onSubmit}>
         <label>Exercise Name</label>
@@ -130,7 +150,12 @@ const Exercise = () => {
 
                 <div className="left-contents">
                   <a className="btn edit">Edit</a>
-                  <a className="btn delete">Delete</a>
+                  <a
+                    className="btn delete"
+                    onClick={() => handleDeleteExercise(exercise._id)}
+                  >
+                    Delete
+                  </a>
                 </div>
               </li>
             ))}

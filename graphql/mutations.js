@@ -54,13 +54,13 @@ const createWorkout = (name, userID, eList) => {
     mutation AddWorkout(
       $name: String!
       $userID: ID!
-      $exerciseList: [ExerciseInput]!
+      $exerciseList: [ExerciseInput!]!
     ) {
       createWorkout(
         data: {
           name: $name
           user: { connect: $userID }
-          exercises: { create: $exerciseList }
+          exercises: $exerciseList
         }
       ) {
         _id
@@ -70,17 +70,11 @@ const createWorkout = (name, userID, eList) => {
           username
         }
         exercises {
-          data {
-            exerciseData {
-              _id
-              name
-              category
-              bodypart
-            }
-            sets {
-              reps
-              weight
-            }
+          exerciseData
+          name
+          sets {
+            reps
+            weight
           }
         }
       }
@@ -89,11 +83,14 @@ const createWorkout = (name, userID, eList) => {
 
   const exerciseList = eList.map((exercise) => {
     const result = {
-      exerciseData: { connect: exercise.exerciseID },
+      exerciseData: exercise.exerciseID,
+      name: exercise.name,
       sets: exercise.sets,
     };
     return result;
   });
+
+  console.log(exerciseList);
 
   const variables = {
     name,
@@ -104,4 +101,24 @@ const createWorkout = (name, userID, eList) => {
   return { mutation, variables };
 };
 
-export { createUser, createExercise, createWorkout };
+const deleteExercise = (exerciseID) => {
+  const mutation = gql`
+    mutation deleteExercise($exerciseID: ID!) {
+      deleteExerciseData(id: $exerciseID) {
+        _id
+        user {
+          _id
+          username
+        }
+        name
+        category
+        bodypart
+      }
+    }
+  `;
+  const variables = { exerciseID };
+
+  return { mutation, variables };
+};
+
+export { deleteExercise, createUser, createExercise, createWorkout };

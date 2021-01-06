@@ -1,9 +1,9 @@
 import Nav from "./nav";
 
-export default function Layout({ children }) {
+export default function Layout({ user, children }) {
   return (
     <>
-      <Nav />
+      <Nav user={user} />
       <main>
         <div className="container">{children}</div>
       </main>

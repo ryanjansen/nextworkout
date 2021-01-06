@@ -4,10 +4,9 @@ import styles from "../styles/Home.module.css";
 import auth0 from "../utils/auth0";
 import Layout from "../components/layout";
 
-export default function Home() {
-  const user = undefined;
+export default function Home({ user }) {
   return (
-    <Layout>
+    <Layout user={user}>
       <div className={styles.container}>
         <Head>
           s<title>Next Workout</title>
@@ -15,13 +14,20 @@ export default function Home() {
         </Head>
 
         <main className={styles.main}>
-          <Link href="/exercise">
-            <a className="btn">Add Exercise</a>
-          </Link>
+          {user ? (
+            <>
+              <h2>Welcome, {user.nickname}</h2>
+              <Link href="/exercise">
+                <a className="btn">Add Exercise</a>
+              </Link>
 
-          <Link href="/addworkout">
-            <a className="btn">Add Workout</a>
-          </Link>
+              <Link href="/addworkout">
+                <a className="btn">Add Workout</a>
+              </Link>
+            </>
+          ) : (
+            <Link href="/api/login">Login</Link>
+          )}
         </main>
 
         <style jsx>{`
@@ -51,11 +57,11 @@ export default function Home() {
   );
 }
 
-// export const getServerSideProps = async ({ req, res }) => {
-//   const session = await auth0.getSession(req);
-//   if (session) {
-//     return { props: { user: session.user } };
-//   } else {
-//     return { props: { user: null } };
-//   }
-// };
+export const getServerSideProps = async ({ req, res }) => {
+  const session = await auth0.getSession(req);
+  if (session) {
+    return { props: { user: session.user } };
+  } else {
+    return { props: { user: null } };
+  }
+};

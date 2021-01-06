@@ -8,7 +8,6 @@ import { createWorkout } from "../graphql/mutations";
 import auth0 from "../utils/auth0";
 
 export default function Workout({ exercises, user }) {
-  console.log(user);
   const { register, handleSubmit, errors } = useForm();
 
   const [selectedExercise, setSelectedExercise] = useState("");
@@ -49,8 +48,8 @@ export default function Workout({ exercises, user }) {
     // Save workout to database
 
     const { mutation, variables } = createWorkout(
-      "Testing Wou",
-      user.user.userID,
+      "Testing Workout",
+      user.userID,
       workout
     );
 
@@ -64,7 +63,7 @@ export default function Workout({ exercises, user }) {
   };
 
   return (
-    <Layout>
+    <Layout user={user}>
       <h1>Add Workout</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
         {!selectedExercise && (
@@ -182,15 +181,15 @@ export default function Workout({ exercises, user }) {
 
 export async function getServerSideProps({ req, res }) {
   try {
-    const user = await auth0.getSession(req);
-    if (!user) {
+    const session = await auth0.getSession(req);
+    if (!session) {
       res.writeHead(302, { Location: "/" });
       res.end();
     }
     const data = await GraphQLClient.request(getExercisesQuery);
     const exercises = data.allExercises.data;
     return {
-      props: { exercises, user },
+      props: { exercises, user: session.user },
     };
   } catch (error) {
     console.error(error);

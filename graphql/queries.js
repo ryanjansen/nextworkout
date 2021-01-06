@@ -37,14 +37,11 @@ const getWorkoutsByUser = (userID) => {
             name
             _id
             exercises {
-              data {
-                exerciseData {
-                  name
-                }
-                sets {
-                  reps
-                  weight
-                }
+              exerciseData
+              name
+              sets {
+                reps
+                weight
               }
             }
           }

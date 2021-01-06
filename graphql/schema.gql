@@ -7,7 +7,7 @@ type User {
 }
 
 type ExerciseData {
-  user: User!
+  user: User
   name: String!
   category: String!
   bodypart: String!
@@ -19,16 +19,23 @@ type Set @embedded {
   rest: Int
 }
 
-type Exercise {
-  exerciseData: ExerciseData!
-  workout: Workout!
+type Exercise @embedded {
+  exerciseData: ID!
+  name: String!
   sets: [Set!]!
 }
 
 type Workout {
   user: User!
   name: String!
-  exercises: [Exercise!]! @relation
+  exercises: [Exercise!]!
+}
+
+type CompletedWorkout {
+  workout: Workout!
+  date: Date!
+  time: String!
+  timeTaken: String!
 }
 
 type Query {

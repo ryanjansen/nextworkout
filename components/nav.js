@@ -1,39 +1,46 @@
 import Link from "next/link";
 
-export default function Nav() {
+export default function Nav({ user }) {
   return (
     <nav>
       <div className="left">
         <Link href="/">
           <a className="nav-link">Home</a>
         </Link>
-        <Link href="/exercise">
-          <a className="nav-link">Exercises</a>
-        </Link>
-        <Link href="/workout">
-          <a className="nav-link">Workouts</a>
-        </Link>
-        <Link href="/addworkout">
-          <a className="nav-link">Add Workout</a>
-        </Link>
-        <Link href="/start">
-          <a className="nav-link">Start Workout</a>
-        </Link>
-        <Link href="/history">
-          <a className="nav-link">Workout History</a>
-        </Link>
-        <Link href="/stats">
-          <a className="nav-link">Exercise Stats</a>
-        </Link>
+        {user && (
+          <>
+            <Link href="/exercise">
+              <a className="nav-link">Exercises</a>
+            </Link>
+            <Link href="/workout">
+              <a className="nav-link">Workouts</a>
+            </Link>
+            <Link href="/addworkout">
+              <a className="nav-link">Add Workout</a>
+            </Link>
+            <Link href="/history">
+              <a className="nav-link">Workout History</a>
+            </Link>
+            <Link href="/stats">
+              <a className="nav-link">Exercise Stats</a>
+            </Link>
+          </>
+        )}
       </div>
 
       <div className="right">
-        <a className="nav-link" href="/api/login">
-          Login
-        </a>
-        <a className="nav-link" href="/api/logout">
-          Logout
-        </a>
+        {!user ? (
+          <a className="nav-link" href="/api/login">
+            Login
+          </a>
+        ) : (
+          <>
+            <h3 className="welcomeMsg">Welcome, {user.nickname}</h3>
+            <a className="nav-link" href="/api/logout">
+              Logout
+            </a>
+          </>
+        )}
       </div>
 
       <style jsx>{`
@@ -54,6 +61,12 @@ export default function Nav() {
         .nav-link:hover {
           background-color: black;
           color: #ffff00;
+        }
+
+        .welcomeMsg {
+          display: inline-block;
+          margin: 0;
+          padding-right: 0.2rem;
         }
 
         .left {
