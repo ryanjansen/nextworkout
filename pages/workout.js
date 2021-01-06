@@ -4,6 +4,7 @@ import { getWorkoutsByUser } from "../graphql/queries";
 import { useState } from "react";
 import auth0 from "../utils/auth0";
 import WorkoutRunner from "../components/workoutRunner";
+import { createCompletedWorkout, deleteWorkout } from "../graphql/mutations";
 
 export default function Workout({ workouts, user }) {
   console.log(workouts);
@@ -16,8 +17,32 @@ export default function Workout({ workouts, user }) {
     setRunningWorkout(workout);
   };
 
-  const finishWorkout = () => {
-    setRunningWorkout();
+  const finishWorkout = async (date, timeTaken) => {
+    const { mutation, variables } = createCompletedWorkout(
+      runningWorkout.name,
+      user.userID,
+      runningWorkout._id,
+      date,
+      timeTaken,
+      runningWorkout.exercises
+    );
+    try {
+      const data = await GraphQLClient.request(mutation, variables);
+      console.log(data);
+      setRunningWorkout();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleDeleteWorkout = async (workoutID) => {
+    const { mutation, variables } = deleteWorkout(workoutID);
+    try {
+      const data = await GraphQLClient.request(mutation, variables);
+      console.log(data);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -53,6 +78,9 @@ export default function Workout({ workouts, user }) {
                   })}
                   <button onClick={() => startWorkout(workout)}>
                     Start Workout
+                  </button>
+                  <button onClick={() => handleDeleteWorkout(workout._id)}>
+                    Delete Workout
                   </button>
                 </div>
               );

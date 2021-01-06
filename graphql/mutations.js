@@ -121,4 +121,71 @@ const deleteExercise = (exerciseID) => {
   return { mutation, variables };
 };
 
-export { deleteExercise, createUser, createExercise, createWorkout };
+const createCompletedWorkout = (
+  name,
+  userID,
+  workoutID,
+  date,
+  timeTaken,
+  exerciseList
+) => {
+  const mutation = gql`
+    mutation createCompletedWorkout(
+      $name: String!
+      $userID: ID!
+      $workoutID: ID!
+      $date: Date!
+      $timeTaken: Int!
+      $exerciseList: [ExerciseInput!]!
+    ) {
+      createCompletedWorkout(
+        data: {
+          name: $name
+          user: { connect: $userID }
+          workout: { connect: $workoutID }
+          date: $date
+          timeTaken: $timeTaken
+          exercises: $exerciseList
+        }
+      ) {
+        _id
+        workout {
+          user {
+            _id
+            username
+          }
+        }
+      }
+    }
+  `;
+  const variables = { name, exerciseList, userID, workoutID, date, timeTaken };
+
+  return { mutation, variables };
+};
+
+const deleteWorkout = (workoutID) => {
+  const mutation = gql`
+    mutation deleteWorkout($workoutID: ID!) {
+      deleteWorkout(id: $workoutID) {
+        _id
+        name
+        user {
+          _id
+          username
+        }
+      }
+    }
+  `;
+  const variables = { workoutID };
+
+  return { mutation, variables };
+};
+
+export {
+  deleteWorkout,
+  createCompletedWorkout,
+  deleteExercise,
+  createUser,
+  createExercise,
+  createWorkout,
+};

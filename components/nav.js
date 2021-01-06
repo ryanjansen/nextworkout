@@ -21,9 +21,6 @@ export default function Nav({ user }) {
             <Link href="/history">
               <a className="nav-link">Workout History</a>
             </Link>
-            <Link href="/stats">
-              <a className="nav-link">Exercise Stats</a>
-            </Link>
           </>
         )}
       </div>

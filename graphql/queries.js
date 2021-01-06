@@ -55,4 +55,36 @@ const getWorkoutsByUser = (userID) => {
   return { query, variables };
 };
 
-export { getUser, getExercisesQuery, getWorkoutsByUser };
+const getCompletedWorkoutsByUser = (userID) => {
+  const query = gql`
+    query getCompletedWorkoutsByUser($userID: ID!) {
+      findUserByID(id: $userID) {
+        completedWorkouts {
+          data {
+            name
+            date
+            timeTaken
+            exercises {
+              name
+              sets {
+                reps
+                weight
+              }
+            }
+            _id
+          }
+        }
+      }
+    }
+  `;
+
+  const variables = { userID };
+
+  return { query, variables };
+};
+export {
+  getCompletedWorkoutsByUser,
+  getUser,
+  getExercisesQuery,
+  getWorkoutsByUser,
+};

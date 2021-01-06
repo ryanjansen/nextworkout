@@ -4,6 +4,7 @@ type User {
   email: String!
   exercises: [ExerciseData] @relation
   workouts: [Workout] @relation
+  completedWorkouts: [CompletedWorkout] @relation
 }
 
 type ExerciseData {
@@ -32,10 +33,12 @@ type Workout {
 }
 
 type CompletedWorkout {
+  user: User!
   workout: Workout!
+  name: String!
   date: Date!
-  time: String!
-  timeTaken: String!
+  timeTaken: Int!
+  exercises: [Exercise!]!
 }
 
 type Query {
