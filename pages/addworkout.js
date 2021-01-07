@@ -1,4 +1,4 @@
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import Layout from "../components/layout";
 import GraphQLClient from "../utils/graphQLClient";
 import { getExercisesQuery } from "../graphql/queries";
@@ -6,27 +6,57 @@ import { useState } from "react";
 import WorkoutTable from "../components/workoutTable";
 import { createWorkout } from "../graphql/mutations";
 import auth0 from "../utils/auth0";
+import {
+  Input,
+  FormControl,
+  FormLabel,
+  FormErrorMessage,
+  FormHelperText,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
+  Select,
+  Editable,
+  EditableInput,
+  EditablePreview,
+  Heading,
+  Button,
+} from "@chakra-ui/react";
 
 export default function Workout({ exercises, user }) {
-  const { register, handleSubmit, errors } = useForm();
+  const { register, handleSubmit, errors, control } = useForm();
 
   const [selectedExercise, setSelectedExercise] = useState("");
   const [exerciseSets, setExerciseSets] = useState([]);
   const [workout, setWorkout] = useState([]);
 
+  const NI = ({ ...rest }) => {
+    return (
+      <NumberInput {...rest}>
+        <NumberInputField />
+        <NumberInputStepper>
+          <NumberIncrementStepper />
+          <NumberDecrementStepper />
+        </NumberInputStepper>
+      </NumberInput>
+    );
+  };
+
   const onSubmit = (data) => {
     console.log(data);
-    if (!selectedExercise) {
-      const exerciseData = exercises.find((exercise) => {
-        return exercise.name === data.exercise;
-      });
-      console.log(exerciseData);
-      setSelectedExercise(exerciseData);
-    } else {
-      const reps = parseFloat(data.reps);
-      const weight = parseFloat(data.weight);
-      setExerciseSets([...exerciseSets, { reps, weight }]);
-    }
+    // if (!selectedExercise) {
+    //   const exerciseData = exercises.find((exercise) => {
+    //     return exercise.name === data.exercise;
+    //   });
+    //   console.log(exerciseData);
+    //   setSelectedExercise(exerciseData);
+    // } else {
+    //   const reps = parseFloat(data.reps);
+    //   const weight = parseFloat(data.weight);
+    //   setExerciseSets([...exerciseSets, { reps, weight }]);
+    // }
   };
 
   const handleAddToWorkout = () => {
@@ -64,12 +94,15 @@ export default function Workout({ exercises, user }) {
 
   return (
     <Layout user={user}>
-      {/* <h1>Add Workout</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
         {!selectedExercise && (
           <>
-            <label>Select Exercise</label>
-            <select name="exercise" ref={register()}>
+            <FormLabel>Select Exercise</FormLabel>
+            <Select
+              placeholder="Select Exercise"
+              name="exercise"
+              ref={register()}
+            >
               {exercises.map((exercise) => {
                 return (
                   <option key={exercise.name} value={exercise.name}>
@@ -77,57 +110,82 @@ export default function Workout({ exercises, user }) {
                   </option>
                 );
               })}
-            </select>
+            </Select>
           </>
         )}
 
-        {selectedExercise && (
-          <>
-            <h2>{selectedExercise.name}</h2>
+        <Heading>{selectedExercise.name}</Heading>
 
-            {exerciseSets.length !== 0 && (
-              <table>
-                <thead>
-                  <tr>
-                    <th>Set</th>
-                    <th>Reps</th>
-                    <th>Weight</th>
+        {exerciseSets.length !== 0 && (
+          <table>
+            <thead>
+              <tr>
+                <th>Set</th>
+                <th>Reps</th>
+                <th>Weight</th>
+              </tr>
+            </thead>
+            <tbody>
+              {exerciseSets.map((exercise, index) => {
+                return (
+                  <tr key={index}>
+                    <td>{index + 1}</td>
+                    <td>{exercise.reps}</td>
+                    <td>{exercise.weight}</td>
                   </tr>
-                </thead>
-                <tbody>
-                  {exerciseSets.map((exercise, index) => {
-                    return (
-                      <tr key={index}>
-                        <td>{index + 1}</td>
-                        <td>{exercise.reps}</td>
-                        <td>{exercise.weight}</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            )}
-
-            <label>Reps</label>
-            <input name="reps" ref={register({ required: true })} />
-            {errors.reps && <span>This field is required</span>}
-
-            <label>Weight</label>
-            <input name="weight" ref={register({ required: true })} />
-            {errors.weight && <span>This field is required</span>}
-          </>
+                );
+              })}
+            </tbody>
+          </table>
         )}
 
-        <input className="btn" type="submit" value="Add" />
+        <FormControl isInvalid={errors.reps}>
+          <FormLabel htmlFor="reps" mt={4}>
+            Reps
+          </FormLabel>
+          <NumberInput min={0} defaultValue={1}>
+            <NumberInputField name="reps" ref={register({ required: true })} />
+            <NumberInputStepper>
+              <NumberIncrementStepper />
+              <NumberDecrementStepper />
+            </NumberInputStepper>
+          </NumberInput>
+          <FormErrorMessage>Do some reps!</FormErrorMessage>
+        </FormControl>
+
+        <FormControl isInvalid={errors.weight}>
+          <FormLabel htmlFor="weight" mt={4}>
+            Weight
+          </FormLabel>
+
+          <NumberInput defaultValue={0} min={0} precision={2} step={2.5}>
+            <NumberInputField
+              name="weight"
+              ref={register({ required: true })}
+            />
+            <NumberInputStepper>
+              <NumberIncrementStepper />
+              <NumberDecrementStepper />
+            </NumberInputStepper>
+          </NumberInput>
+          <FormErrorMessage>Add some weight!</FormErrorMessage>
+        </FormControl>
+
+        <Button mt={4} type="submit">
+          Add
+        </Button>
+
         {selectedExercise && (
-          <button onClick={handleAddToWorkout}>Add to workout</button>
+          <Button mt={4} ml={4} colorScheme="red" onClick={handleAddToWorkout}>
+            Add to workout
+          </Button>
         )}
       </form>
 
       <WorkoutTable
         workout={workout}
         handleCreateWorkout={handleCreateWorkout}
-      /> */}
+      />
     </Layout>
   );
 }
