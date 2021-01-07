@@ -49,11 +49,12 @@ export default function Layout({ user, children }) {
         direction={{ base: "row", md: "column" }}
         bottom={{ base: 0, md: null }}
         p={{ base: 4, md: 0 }}
-        h={{ base: "auto", md: "100vh" }}
+        h={{ base: 20, md: "100vh" }}
         w={{ base: "full", md: "2xs" }}
         textAlign="center"
         bg="white"
         borderTop={{ base: "1px solid gray", md: null }}
+        zIndex={2}
       >
         <Text
           display={{ base: "none", md: "block" }}
@@ -97,7 +98,7 @@ export default function Layout({ user, children }) {
           </MenuItem>
         )}
       </Flex>
-      <Box p={12} mb={[12, 12, 0]} ml={[0, 0, 64]} as="main">
+      <Box p={12} mb={{ base: 12, md: 0 }} ml={{ base: 0, md: 64 }} as="main">
         {children}
       </Box>
     </Box>
