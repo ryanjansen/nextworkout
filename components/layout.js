@@ -1,68 +1,101 @@
-import { Flex, Text, Box, Link as CLink } from "@chakra-ui/react";
+import {
+  Flex,
+  Text,
+  Box,
+  Icon,
+  Stack,
+  Divider,
+  Avatar,
+} from "@chakra-ui/react";
 import Link from "next/link";
+import { IoBarbell } from "react-icons/io5";
+import { GrPlan, GrHistory, GrLogout, GrLogin } from "react-icons/gr";
+
+const MenuItem = ({ children, href, selected, icon, ...rest }) => {
+  return (
+    <Link href={href}>
+      <a>
+        <Stack
+          // p={5}
+          // borderRadius={32}
+          align="center"
+          direction={{ base: "column", md: "row" }}
+          spacing={{ base: 2, md: 4 }}
+          mb={{ base: 0, md: 10 }}
+        >
+          <Icon as={icon} />
+          <Text
+            fontSize={{ base: "md", row: "lg" }}
+            fontWeight="medium"
+            w="full"
+            _hover={{ color: "yellow.300" }}
+          >
+            {children}
+          </Text>
+        </Stack>
+      </a>
+    </Link>
+  );
+};
 
 export default function Layout({ user, children }) {
   return (
-    <Box bg="gray.400" minH="100vh">
+    <Box minH="100vh">
       <Flex
         as="nav"
-        bgGradient="linear(to-r, gray.700, gray.500 )"
         pos="fixed"
+        justify="space-around"
         align="center"
-        direction={["row", "row", "column"]}
-        bottom={[0, 0, null]}
-        h={[12, 12, "100vh"]}
-        w={["full", "full", "2xs"]}
-        color="white"
+        direction={{ base: "row", md: "column" }}
+        bottom={{ base: 0, md: null }}
+        p={{ base: 4, md: 0 }}
+        h={{ base: "auto", md: "100vh" }}
+        w={{ base: "full", md: "2xs" }}
         textAlign="center"
+        bg="white"
+        borderTop={{ base: "1px solid gray", md: null }}
       >
-        <Text fontSize="3xl" fontWeight="bold" mb={32} mt={4}>
-          <Link href="/" passHref>
-            <CLink w="full">Pumpshock</CLink>
-          </Link>
-        </Text>
         <Text
-          fontSize="lg"
-          pr={1}
-          mb={6}
-          borderLeft="3px solid transparent"
-          w="full"
-          _hover={{ borderLeft: "3px solid yellow", cursor: "pointer" }}
+          display={{ base: "none", md: "block" }}
+          fontSize="3xl"
+          fontWeight="bold"
+          mb={8}
+          mt={8}
+          color="yellow.300"
         >
-          <Link href="/workouts">
-            <a>Workouts</a>
+          <Link href="/">
+            <a>Pumpshock</a>
           </Link>
         </Text>
-        <Text
-          fontSize="lg"
-          pr={1}
-          mb={6}
-          borderLeft="3px solid transparent"
-          w="full"
-          _hover={{ borderLeft: "3px solid yellow", cursor: "pointer" }}
-        >
-          <Link href="/exercises">
-            <a>Exercises</a>
-          </Link>
-        </Text>
-        <Text
-          fontSize="lg"
-          pr={1}
-          mb={6}
-          borderLeft="3px solid transparent"
-          w="full"
-          _hover={{ borderLeft: "3px solid yellow", cursor: "pointer" }}
-        >
-          <Link href="/history">
-            <a>History</a>
-          </Link>
-        </Text>
-        <style jsx>{`
-          a,
-          Link {
-            width: 100%;
-          }
-        `}</style>
+        {user && (
+          <>
+            <Box mb={8} display={{ base: "none", md: "block" }}>
+              <Avatar src="/profile.jpg" name="Fay" size="2xl" mb={5}></Avatar>
+              <Text fontSize="xl" fontWeight="bold">
+                {user.nickname}
+              </Text>
+            </Box>
+            <MenuItem href="/workouts" icon={GrPlan}>
+              Workouts
+            </MenuItem>
+            <MenuItem href="/exercises" icon={IoBarbell}>
+              Exercises
+            </MenuItem>
+            <MenuItem href="/history" icon={GrHistory}>
+              History
+            </MenuItem>
+            <Divider mb={12} display={{ base: "none", md: "block" }} />
+            <MenuItem href="/api/logout" icon={GrLogout}>
+              Logout
+            </MenuItem>
+          </>
+        )}
+
+        {!user && (
+          <MenuItem href="/api/login" icon={GrLogin}>
+            Login
+          </MenuItem>
+        )}
       </Flex>
       <Box p={12} mb={[12, 12, 0]} ml={[0, 0, 64]} as="main">
         {children}

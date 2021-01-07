@@ -64,7 +64,6 @@ export default function Workout({ exercises, user }) {
 
   return (
     <Layout user={user}>
-      {/* <h1>Add Workout</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
         {!selectedExercise && (
           <>
@@ -127,7 +126,7 @@ export default function Workout({ exercises, user }) {
       <WorkoutTable
         workout={workout}
         handleCreateWorkout={handleCreateWorkout}
-      /> */}
+      />
     </Layout>
   );
 }
