@@ -64,7 +64,7 @@ export default function Workout({ exercises, user }) {
 
   return (
     <Layout user={user}>
-      <h1>Add Workout</h1>
+      {/* <h1>Add Workout</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
         {!selectedExercise && (
           <>
@@ -122,59 +122,12 @@ export default function Workout({ exercises, user }) {
         {selectedExercise && (
           <button onClick={handleAddToWorkout}>Add to workout</button>
         )}
-        <style jsx>{`
-          input {
-            display: block;
-            width: 100%;
-            margin: 5px 0;
-            font-size: 20px;
-            padding: 10px 5px;
-            border-radius: 5px;
-            border: 1px solid black;
-          }
-
-          label {
-            display: block;
-            margin-top: 2rem;
-            font-size: 25px;
-          }
-
-          .btn {
-            background-color: white;
-            border: 1px solid black;
-            color: black;
-            padding: 10px 32px;
-            text-align: center;
-            text-decoration: none;
-            font-size: 16px;
-            margin-top: 1rem;
-            transition: all 0.2s;
-          }
-
-          .btn:hover {
-            cursor: pointer;
-            background-color: red;
-            color: white;
-          }
-
-          select {
-            border-radius: 5px;
-            padding: 5px;
-            margin-top: 20px;
-            width: 100%;
-            font-size: 20px;
-            border: 1px solid black;
-            height: 34px;
-            -webkit-apperance: none;
-            -moz-appearance: none;
-          }
-        `}</style>
       </form>
 
       <WorkoutTable
         workout={workout}
         handleCreateWorkout={handleCreateWorkout}
-      />
+      /> */}
     </Layout>
   );
 }

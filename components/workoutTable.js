@@ -1,7 +1,7 @@
 const workoutTable = ({ workout, handleCreateWorkout }) => {
   if (workout.length !== 0) {
     return (
-      <div className="container">
+      <>
         <h1>New Workout</h1>
         {workout.map((exercise) => {
           return (
@@ -32,26 +32,7 @@ const workoutTable = ({ workout, handleCreateWorkout }) => {
         })}
 
         <button onClick={handleCreateWorkout}>Save Workout</button>
-        <style jsx>{`
-          .container {
-            margin: 20px 0;
-            border: 1px solid black;
-            padding: 20px;
-            background-color: #eee:
-          }
-
-          td {
-            padding: 0 10px;
-          }
-
-          tr {
-            padding: 10px;
-          }
-
-          .exercise {
-          }
-        `}</style>
-      </div>
+      </>
     );
   } else {
     return null;

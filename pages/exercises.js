@@ -9,7 +9,7 @@ import { createExercise, deleteExercise } from "../graphql/mutations";
 
 const fetcher = (...args) => GraphQLClient.request(...args);
 
-const Exercise = () => {
+const Exercises = () => {
   const router = useRouter();
   const [exercises, setExercises] = useState();
   const [user, setUser] = useState();
@@ -219,4 +219,4 @@ const Exercise = () => {
   );
 };
 
-export default Exercise;
+export default Exercises;

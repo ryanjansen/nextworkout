@@ -19,7 +19,7 @@ import {
   Stack,
 } from "@chakra-ui/react";
 
-export default function Workout({ workouts, user }) {
+export default function Workouts({ workouts, user }) {
   console.log(workouts);
   console.log(user);
 
