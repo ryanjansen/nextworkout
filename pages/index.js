@@ -3,6 +3,7 @@ import Link from "next/link";
 import styles from "../styles/Home.module.css";
 import auth0 from "../utils/auth0";
 import Layout from "../components/layout";
+import { Text, Grid, GridItem } from "@chakra-ui/react";
 
 export default function Home({ user }) {
   return (
@@ -16,41 +17,53 @@ export default function Home({ user }) {
         {user ? (
           <>
             <h2>Welcome, {user.nickname}</h2>
-            <Link href="/exercise">
-              <a className="btn">Add Exercise</a>
-            </Link>
 
-            <Link href="/addworkout">
-              <a className="btn">Add Workout</a>
-            </Link>
+            <Grid
+              h="450px"
+              templateRows="repeat(2, 1fr)"
+              templateColumns="repeat(4, 1fr)"
+              gap={4}
+            >
+              <GridItem borderRadius="5px" rowSpan={1} colSpan={2} bg="#cfe2fa">
+                <Text
+                  textAlign="right"
+                  fontSize="lg"
+                  m={1}
+                  _hover={{
+                    transition: "0.5s",
+                    fontSize: "xl",
+                    cursor: "pointer",
+                  }}
+                >
+                  <Link href="/exercise">
+                    <a>Add Exercise</a>
+                  </Link>
+                </Text>
+              </GridItem>
+              <GridItem borderRadius="5px" rowSpan={1} colSpan={2} bg="#cfe2fa">
+                <Text
+                  textAlign="right"
+                  fontSize="lg"
+                  m={1}
+                  _hover={{
+                    transition: "0.5s",
+                    fontSize: "xl",
+                    cursor: "pointer",
+                  }}
+                >
+                  <Link href="/addworkout">
+                    <a>Add Workout</a>
+                  </Link>
+                </Text>
+              </GridItem>
+              <GridItem borderRadius="5px" colSpan={1} bg="#cfe2fa" />
+              <GridItem borderRadius="5px" colSpan={1} bg="#cfe2fa" />
+            </Grid>
           </>
         ) : (
-          <Link href="/api/login">Login</Link>
+          <Link>Login</Link>
         )}
       </main>
-
-      <style jsx>{`
-        .btn {
-          display: inline-block;
-           padding: 0.35em 1.2em;
-           border: 0.1em solid #000000;
-           margin: 2em 2em;
-           border-radius: 0.12em;
-           box-sizing: border-box;
-           text-decoration: none;
-          font-size: 30px;
-           font-family: "Roboto", sans-serif;
-           font-weight: 300;
-           color: #000000;
-           text-align: center;
-           transition: all 0.2s;
-        }
-
-        .btn:hover {
-          color: #ffffff;
-           background-color: #000000;
-        }
-      `}</style>
     </Layout>
   );
 }
