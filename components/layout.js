@@ -71,9 +71,8 @@ export default function Layout({ user, children }) {
         {user && (
           <>
             <Box mb={8} display={{ base: "none", md: "block" }}>
-              <Avatar src="/profile.jpg" name="Fay" size="2xl" mb={5}></Avatar>
               <Text fontSize="xl" fontWeight="bold">
-                {user.nickname}
+                Welcome, {user.nickname}
               </Text>
             </Box>
             <MenuItem href="/workouts" icon={GrPlan}>

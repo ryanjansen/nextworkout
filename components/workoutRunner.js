@@ -1,5 +1,15 @@
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
+import {
+  Container,
+  Heading,
+  HStack,
+  Text,
+  Checkbox,
+  Box,
+  Input,
+  Button,
+} from "@chakra-ui/react";
 
 export default function WorkoutRunner({ workout, handleFinishWorkout }) {
   const [timeTaken, setTimeTaken] = useState(0);
@@ -13,34 +23,83 @@ export default function WorkoutRunner({ workout, handleFinishWorkout }) {
     return () => clearTimeout(timer);
   });
 
+  const Timer = () => {
+    let minutes = Math.floor(timeTaken / 60);
+    let seconds = timeTaken - minutes;
+    minutes = minutes < 10 ? "0" + minutes : minutes;
+    seconds = seconds < 10 ? "0" + seconds : seconds;
+
+    return (
+      <Heading m={5}>
+        {minutes}:{seconds}
+      </Heading>
+    );
+  };
+
   return (
-    <div>
-      <div>{now.format("DD MMMM YYYY HH:mm").toString()}</div>
-      <div>{timeTaken}</div>
-      <h1>{workout.name}</h1>
+    <Container size="2xl" p={8} centerContent>
+      <Heading as="u" size="2xl">
+        {workout.name}
+      </Heading>
+      <Heading mt={4} size="xl">
+        {now.format("DD MMMM YYYY (HH:mm)").toString()}
+      </Heading>
+      <Timer />
       {workout.exercises.map((exercise) => {
         return (
-          <div className="exercise" key={exercise.name}>
-            <h3>{exercise.name}</h3>
+          <Box key={exercise.name}>
+            <Heading textAlign="center" pb={4} pt={4}>
+              {exercise.name}
+            </Heading>
             {exercise.sets.map((set, index) => {
               return (
-                <div className="set" key={index}>
-                  <h4>Set {index + 1}</h4>
-                  <h5>
-                    {set.reps} reps x {set.weight} kg{" "}
-                  </h5>
-                  <input type="checkbox"></input>
-                </div>
+                <HStack
+                  spacing={5}
+                  w="100vw"
+                  bg={index % 2 === 0 ? "yellow.300" : "white"}
+                  textAlign="center"
+                  justify="center"
+                >
+                  <Text
+                    pr={{ base: 2, md: 4 }}
+                    fontSize={{ base: "3xl", md: "4xl" }}
+                  >
+                    Set {index + 1}
+                  </Text>
+                  <Text
+                    pr={{ base: 2, md: 4 }}
+                    fontSize={{ base: "3xl", md: "4xl" }}
+                  >
+                    <Input
+                      fontSize={{ base: "3xl", md: "4xl" }}
+                      w="5rem"
+                      defaultValue={set.reps}
+                    />{" "}
+                    reps x{" "}
+                    <Input
+                      fontSize={{ base: "3xl", md: "4xl" }}
+                      w="7rem"
+                      defaultValue={set.weight}
+                    />{" "}
+                    kg
+                  </Text>
+                  <Checkbox size="lg" colorScheme="green" />
+                </HStack>
               );
             })}
-          </div>
+          </Box>
         );
       })}
-      <button
+      <Button
+        colorScheme="green"
+        size="lg"
+        fontSize="3xl"
+        p={12}
+        mt={4}
         onClick={() => handleFinishWorkout(now.format("YYYY-MM-DD"), timeTaken)}
       >
         Finish Workout
-      </button>
-    </div>
+      </Button>
+    </Container>
   );
 }

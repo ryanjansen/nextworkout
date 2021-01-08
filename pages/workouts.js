@@ -231,7 +231,10 @@ export default function Workouts({ workouts, user }) {
       )}
 
       {runningWorkout && (
-        <WorkoutRunner handleFinishWorkout={handleFinishWorkout} />
+        <WorkoutRunner
+          workout={runningWorkout}
+          handleFinishWorkout={handleFinishWorkout}
+        />
       )}
     </Layout>
   );
