@@ -17,14 +17,92 @@ import {
   Td,
   Button,
   Stack,
+  Grid,
+  GridItem,
+  Text,
+  Flex,
+  Center,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+  IconButton,
 } from "@chakra-ui/react";
+import { GrAdd } from "react-icons/gr";
 import Link from "next/link";
+import Head from "next/head";
 
 export default function Workouts({ workouts, user }) {
   console.log(workouts);
   console.log(user);
 
   const [runningWorkout, setRunningWorkout] = useState();
+
+  const WorkoutCard = ({ workout, key }) => {
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    return (
+      <>
+        <GridItem
+          onClick={onOpen}
+          key={key}
+          borderRadius="5px"
+          colSpan={{ base: 6, md: 3, lg: 2 }}
+          boxShadow="lg"
+          rounded="lg"
+          bg="white"
+          p={2}
+          textAlign="center"
+          cursor="pointer"
+        >
+          <Text
+            m={2}
+            borderRadius={3}
+            bg="yellow.300"
+            fontSize="xl"
+            fontWeight="bold"
+          >
+            {workout.name}
+          </Text>
+          <Center h={"10rem"}>
+            <Text noOfLines={6}>
+              {workout.exercises.map((exercise) => {
+                return (
+                  <Text key={exercise.name}>
+                    {exercise.name} : {exercise.sets.length} sets
+                  </Text>
+                );
+              })}
+            </Text>
+          </Center>
+        </GridItem>
+
+        <Modal onClose={onClose} size="xl" isOpen={isOpen}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>{workout.name}</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              {workout.exercises.map((exercise) =>
+                generateExerciseTable(exercise)
+              )}
+            </ModalBody>
+            <ModalFooter>
+              <Button mr={4} colorScheme="green" onClick={handleStartWorkout}>
+                Start
+              </Button>
+              <Button colorScheme="red" onClick={handleStartWorkout}>
+                Edit
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      </>
+    );
+  };
 
   const handleStartWorkout = (workout) => {
     console.log(workout);
@@ -65,12 +143,12 @@ export default function Workouts({ workouts, user }) {
         <Heading size="m" mb={4}>
           {exercise.name}
         </Heading>
-        <Table variant="simple">
+        <Table variant="striped" colorScheme="yellow">
           <Thead>
             <Tr>
               <Th>Set</Th>
-              <Th isNumeric>Reps</Th>
-              <Th isNumeric>Weight</Th>
+              <Th>Reps</Th>
+              <Th>Weight</Th>
             </Tr>
           </Thead>
           <Tbody>
@@ -91,57 +169,62 @@ export default function Workouts({ workouts, user }) {
 
   return (
     <Layout user={user}>
-      <Container maxW="xl" centerContent>
-        <Heading size="3xl" mb={4} mt={4}>
-          Workouts
-        </Heading>
-        <Link href="/addworkout">
-          <a>Add Workout</a>
-        </Link>
+      <Head>
+        <title>Next Workout | Workouts</title>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
 
-        {runningWorkout ? (
-          <WorkoutRunner
-            workout={runningWorkout}
-            finishWorkout={handleFinishWorkout}
-          />
-        ) : (
-          <>
-            {workouts.map((workout) => {
-              return (
-                <Box
-                  border="1px"
-                  borderColor="grey.200"
-                  p={6}
-                  m={10}
-                  key={workout._id}
-                >
-                  <Heading size="xl" mb={4}>
-                    {workout.name}
-                  </Heading>
-                  {workout.exercises.map((exercise) => {
-                    return generateExerciseTable(exercise);
-                  })}
-
-                  <Stack direction="row" spacing={4}>
-                    <Button
-                      colorScheme="green"
-                      onClick={() => handleStartWorkout(workout)}
-                    >
-                      Start Workout
-                    </Button>
-                    <Button
-                      colorScheme="red"
-                      onClick={() => handleDeleteWorkout(workout._id)}
-                    >
-                      Delete Workout
-                    </Button>
-                  </Stack>
-                </Box>
-              );
-            })}
-          </>
-        )}
-      </Container>
+      {user && (
+        <>
+          <Grid
+            pb={25}
+            pt={12}
+            as="main"
+            h={{ base: "70rem", md: "2xl", lg: "2xl" }}
+            templateColumns="repeat(6, 1fr)"
+            autoRows="14rem"
+            gap={4}
+          >
+            <GridItem
+              borderRadius="5px"
+              rowSpan={1}
+              colSpan={{ base: 6, md: 3, lg: 4 }}
+              boxShadow="lg"
+              rounded="lg"
+              bg="white"
+            >
+              <Text>Workouts Overview, Continue current workout</Text>
+            </GridItem>
+            <GridItem
+              borderRadius="5px"
+              rowSpan={1}
+              colSpan={{ base: 6, md: 3, lg: 2 }}
+              boxShadow="md"
+              rounded="md"
+              bg="white"
+              align="center"
+            >
+              <Heading textAlign="center" mt={12}>
+                Add Workout
+              </Heading>
+              <Link href="/addworkout">
+                <a>
+                  <IconButton
+                    mt={4}
+                    colorScheme="green"
+                    aria-label="Add Workout"
+                    size="lg"
+                    icon={<GrAdd />}
+                  />
+                </a>
+              </Link>
+            </GridItem>
+            {workouts.map((workout) => (
+              <WorkoutCard key={workout._id} workout={workout} />
+            ))}
+          </Grid>
+        </>
+      )}
     </Layout>
   );
 }
