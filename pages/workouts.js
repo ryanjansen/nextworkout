@@ -18,8 +18,9 @@ import {
   Button,
   Stack,
 } from "@chakra-ui/react";
+import Link from "next/link";
 
-export default function Workout({ workouts, user }) {
+export default function Workouts({ workouts, user }) {
   console.log(workouts);
   console.log(user);
 
@@ -94,6 +95,10 @@ export default function Workout({ workouts, user }) {
         <Heading size="3xl" mb={4} mt={4}>
           Workouts
         </Heading>
+        <Link href="/addworkout">
+          <a>Add Workout</a>
+        </Link>
+
         {runningWorkout ? (
           <WorkoutRunner
             workout={runningWorkout}

@@ -3,56 +3,92 @@ import Link from "next/link";
 import styles from "../styles/Home.module.css";
 import auth0 from "../utils/auth0";
 import Layout from "../components/layout";
+import { Text, Grid, GridItem } from "@chakra-ui/react";
 
 export default function Home({ user }) {
   return (
     <Layout user={user}>
-      <div className={styles.container}>
-        <Head>
-          s<title>Next Workout</title>
-          <link rel="icon" href="/favicon.ico" />
-        </Head>
+      <Head>
+        s<title>Next Workout</title>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
 
-        <main className={styles.main}>
-          {user ? (
-            <>
-              <h2>Welcome, {user.nickname}</h2>
-              <Link href="/exercise">
-                <a className="btn">Add Exercise</a>
-              </Link>
-
-              <Link href="/addworkout">
-                <a className="btn">Add Workout</a>
-              </Link>
-            </>
-          ) : (
-            <Link href="/api/login">Login</Link>
-          )}
-        </main>
-
-        <style jsx>{`
-          .btn {
-            display: inline-block;
-             padding: 0.35em 1.2em;
-             border: 0.1em solid #000000;
-             margin: 2em 2em;
-             border-radius: 0.12em;
-             box-sizing: border-box;
-             text-decoration: none;
-            font-size: 30px;
-             font-family: "Roboto", sans-serif;
-             font-weight: 300;
-             color: #000000;
-             text-align: center;
-             transition: all 0.2s;
-          }
-
-          .btn:hover {
-            color: #ffffff;
-             background-color: #000000;
-          }
-        `}</style>
-      </div>
+      <main className={styles.main}>
+        {user && (
+          <>
+            <Grid
+              padding={4}
+              h={{ base: "2xl", md: "xl", lg: "xl" }}
+              autoRows="15rem"
+              templateColumns="repeat(6, 1fr)"
+              gap={4}
+            >
+              <GridItem
+                boxShadow="1px 1px 1px 1px black"
+                borderRadius="5px"
+                rowSpan={1}
+                colSpan={{ base: 6, md: 3, lg: 4 }}
+              >
+                <Text
+                  textAlign="right"
+                  fontSize="lg"
+                  m={1}
+                  _hover={{
+                    transition: "0.5s",
+                    fontSize: "xl",
+                    cursor: "pointer",
+                  }}
+                >
+                  <Link href="/exercise">
+                    <a>Add Exercise</a>
+                  </Link>
+                </Text>
+              </GridItem>
+              <GridItem
+                boxShadow="1px 1px 1px 1px black"
+                borderRadius="5px"
+                rowSpan={1}
+                colSpan={{ base: 6, md: 3, lg: 2 }}
+              >
+                <Text
+                  textAlign="right"
+                  fontSize="lg"
+                  m={1}
+                  _hover={{
+                    transition: "0.5s",
+                    fontSize: "xl",
+                    cursor: "pointer",
+                  }}
+                >
+                  <Link href="/addworkout">
+                    <a>Add Workout</a>
+                  </Link>
+                </Text>
+              </GridItem>
+              <GridItem
+                boxShadow="1px 1px 1px 1px black"
+                borderRadius="5px"
+                colSpan={{ base: 6, md: 3, lg: 2 }}
+              />
+              <GridItem
+                boxShadow="1px 1px 1px 1px black"
+                borderRadius="5px"
+                colSpan={{ base: 6, md: 3, lg: 2 }}
+              />
+              <GridItem
+                boxShadow="1px 1px 1px 1px black"
+                borderRadius="5px"
+                colSpan={{ base: 6, md: 3, lg: 2 }}
+              />
+              <GridItem
+                boxShadow="1px 1px 1px 1px black"
+                borderRadius="5px"
+                colSpan={{ base: 6, md: 3, lg: 2 }}
+              />
+            </Grid>
+          </>
+        )}
+      </main>
     </Layout>
   );
 }
