@@ -14,17 +14,20 @@ export default function Home({ user }) {
       </Head>
 
       <main className={styles.main}>
-        {user ? (
+        {user && (
           <>
-            <h2>Welcome, {user.nickname}</h2>
-
             <Grid
-              h="450px"
-              templateRows="repeat(2, 1fr)"
-              templateColumns="repeat(4, 1fr)"
+              h={{ base: "70rem", md: "xl" }}
+              templateRows="auto"
+              templateColumns="repeat(3, 1fr)"
               gap={4}
             >
-              <GridItem borderRadius="5px" rowSpan={1} colSpan={2} bg="#cfe2fa">
+              <GridItem
+                borderRadius="5px"
+                rowSpan={1}
+                colSpan={{ base: 3, md: 2 }}
+                bg="#cfe2fa"
+              >
                 <Text
                   textAlign="right"
                   fontSize="lg"
@@ -40,7 +43,12 @@ export default function Home({ user }) {
                   </Link>
                 </Text>
               </GridItem>
-              <GridItem borderRadius="5px" rowSpan={1} colSpan={2} bg="#cfe2fa">
+              <GridItem
+                borderRadius="5px"
+                rowSpan={1}
+                colSpan={{ base: 3, md: 1 }}
+                bg="#cfe2fa"
+              >
                 <Text
                   textAlign="right"
                   fontSize="lg"
@@ -56,12 +64,28 @@ export default function Home({ user }) {
                   </Link>
                 </Text>
               </GridItem>
-              <GridItem borderRadius="5px" colSpan={1} bg="#cfe2fa" />
-              <GridItem borderRadius="5px" colSpan={1} bg="#cfe2fa" />
+              <GridItem
+                borderRadius="5px"
+                colSpan={{ base: 3, md: 1 }}
+                bg="#cfe2fa"
+              />
+              <GridItem
+                borderRadius="5px"
+                colSpan={{ base: 3, md: 1 }}
+                bg="#cfe2fa"
+              />
+              <GridItem
+                borderRadius="5px"
+                colSpan={{ base: 3, md: 1 }}
+                bg="#cfe2fa"
+              />
+              <GridItem
+                borderRadius="5px"
+                colSpan={{ base: 3, md: 1 }}
+                bg="#cfe2fa"
+              />
             </Grid>
           </>
-        ) : (
-          <Link>Login</Link>
         )}
       </main>
     </Layout>

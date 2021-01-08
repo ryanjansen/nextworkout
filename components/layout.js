@@ -25,7 +25,7 @@ const MenuItem = ({ children, href, selected, icon, ...rest }) => {
         >
           <Icon as={icon} />
           <Text
-            fontSize={{ base: "md", row: "lg" }}
+            fontSize={{ base: "md", md: "lg" }}
             fontWeight="medium"
             w="full"
             _hover={{ color: "yellow.300" }}
@@ -98,7 +98,7 @@ export default function Layout({ user, children }) {
           </MenuItem>
         )}
       </Flex>
-      <Box p={12} mb={{ base: 12, md: 0 }} ml={{ base: 0, md: 64 }} as="main">
+      <Box p={0} mb={{ base: 12, md: 0 }} ml={{ base: 0, md: 64 }} as="main">
         {children}
       </Box>
     </Box>
