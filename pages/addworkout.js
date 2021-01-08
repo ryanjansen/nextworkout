@@ -23,45 +23,67 @@ import {
   EditablePreview,
   Heading,
   Button,
+  Grid,
+  GridItem,
+  Text,
+  Icon,
+  HStack,
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  ButtonGroup,
+  Flex,
+  Box,
+  createStandaloneToast,
 } from "@chakra-ui/react";
+import Head from "next/head";
+import { GrEdit } from "react-icons/gr";
 
 export default function Workout({ exercises, user }) {
-  const { register, handleSubmit, errors, control } = useForm();
-
+  const [exerciseDropdownValue, setExerciseDropdownValue] = useState("");
   const [selectedExercise, setSelectedExercise] = useState("");
   const [exerciseSets, setExerciseSets] = useState([]);
   const [workout, setWorkout] = useState([]);
+  const [workoutName, setWorkoutName] = useState("New Workout");
+  const [success, setSuccess] = useState(false);
 
-  const NI = ({ ...rest }) => {
+  const toast = createStandaloneToast();
+
+  const generateExerciseTable = (exercise) => {
     return (
-      <NumberInput {...rest}>
-        <NumberInputField />
-        <NumberInputStepper>
-          <NumberIncrementStepper />
-          <NumberDecrementStepper />
-        </NumberInputStepper>
-      </NumberInput>
+      <Box p={3} key={exercise.name}>
+        <Heading size="m" mb={4}>
+          {exercise.name}
+        </Heading>
+        <Table variant="striped" colorScheme="yellow">
+          <Thead>
+            <Tr>
+              <Th>Set</Th>
+              <Th>Reps</Th>
+              <Th>Weight</Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            {exercise.sets.map((set, index) => {
+              return (
+                <Tr key={index}>
+                  <Td>{index + 1}</Td>
+                  <Td>{set.reps}</Td>
+                  <Td>{set.weight}</Td>
+                </Tr>
+              );
+            })}
+          </Tbody>
+        </Table>
+      </Box>
     );
-  };
-
-  const onSubmit = (data) => {
-    console.log(data);
-    // if (!selectedExercise) {
-    //   const exerciseData = exercises.find((exercise) => {
-    //     return exercise.name === data.exercise;
-    //   });
-    //   console.log(exerciseData);
-    //   setSelectedExercise(exerciseData);
-    // } else {
-    //   const reps = parseFloat(data.reps);
-    //   const weight = parseFloat(data.weight);
-    //   setExerciseSets([...exerciseSets, { reps, weight }]);
-    // }
   };
 
   const handleAddToWorkout = () => {
     // Transfer selected exercise and exercise sets to workout
-    console.log("clicked");
     setWorkout([
       ...workout,
       {
@@ -74,11 +96,16 @@ export default function Workout({ exercises, user }) {
     setExerciseSets([]);
   };
 
+  const handleCancelExercise = () => {
+    setSelectedExercise("");
+    setExerciseSets([]);
+  };
+
   const handleCreateWorkout = async () => {
     // Save workout to database
 
     const { mutation, variables } = createWorkout(
-      "Testing Workout",
+      workoutName,
       user.userID,
       workout
     );
@@ -87,105 +114,222 @@ export default function Workout({ exercises, user }) {
       const data = await GraphQLClient.request(mutation, variables);
       console.log(data);
       setWorkout([]);
+      setSuccess(true);
+      setTimeout(() => setSuccess(false), 5000);
     } catch (error) {
       console.error(error);
     }
   };
 
+  const handleAddSet = () => {
+    setExerciseSets([...exerciseSets, { reps: 0, weight: 0 }]);
+  };
+
   return (
     <Layout user={user}>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        {!selectedExercise && (
-          <>
-            <FormLabel>Select Exercise</FormLabel>
-            <Select
-              placeholder="Select Exercise"
-              name="exercise"
-              ref={register()}
+      <Head>
+        <title>Next Workout | Add Workout </title>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+
+      {user && (
+        <>
+          <Grid
+            pt={12}
+            pb={8}
+            as="main"
+            h="auto"
+            templateColumns="repeat(6, 1fr)"
+            autoRows="auto"
+            gap={4}
+          >
+            {/* Exercise Form */}
+            {selectedExercise && (
+              <GridItem
+                borderRadius="5px"
+                rowSpan={1}
+                colSpan={6}
+                boxShadow="md"
+                rounded="md"
+                bg="white"
+              >
+                <HStack>
+                  <Heading p={4}>{selectedExercise.name}</Heading>
+                  <Button onClick={handleAddSet}>Add Set</Button>
+                </HStack>
+
+                <Table variant="simple">
+                  <Thead>
+                    <Tr>
+                      <Th>Set</Th>
+                      <Th>Reps</Th>
+                      <Th>Weight</Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody>
+                    {exerciseSets.map((_, index) => {
+                      return (
+                        <Tr key={index}>
+                          <Td>{index + 1}</Td>
+                          <Td>
+                            <NumberInput
+                              min={0}
+                              value={exerciseSets[index].reps}
+                              onChange={(value) => {
+                                let newSets = exerciseSets.slice();
+                                newSets[index].reps = parseFloat(value);
+                                setExerciseSets(newSets);
+                              }}
+                            >
+                              <NumberInputField />
+                              <NumberInputStepper>
+                                <NumberIncrementStepper />
+                                <NumberDecrementStepper />
+                              </NumberInputStepper>
+                            </NumberInput>
+                          </Td>
+                          <Td>
+                            <NumberInput
+                              min={0}
+                              precision={2}
+                              step={0.5}
+                              value={exerciseSets[index].weight}
+                              onChange={(value) => {
+                                let newSets = exerciseSets.slice();
+                                newSets[index].weight = parseFloat(value);
+                                setExerciseSets(newSets);
+                              }}
+                            >
+                              <NumberInputField />
+                              <NumberInputStepper>
+                                <NumberIncrementStepper />
+                                <NumberDecrementStepper />
+                              </NumberInputStepper>
+                            </NumberInput>
+                          </Td>
+                        </Tr>
+                      );
+                    })}
+                  </Tbody>
+                </Table>
+                <Flex justify="flex-end" m={4}>
+                  <ButtonGroup>
+                    <Button onClick={handleAddToWorkout} colorScheme="green">
+                      Add to Workout
+                    </Button>
+                    <Button onClick={handleCancelExercise} colorScheme="red">
+                      Cancel
+                    </Button>
+                  </ButtonGroup>
+                </Flex>
+              </GridItem>
+            )}
+
+            {/* Exercise Selector */}
+            {!selectedExercise && (
+              <GridItem
+                p={4}
+                borderRadius="5px"
+                rowSpan={1}
+                h={"11rem"}
+                colSpan={{ base: 6, md: 2 }}
+                boxShadow="md"
+                rounded="md"
+                bg="white"
+              >
+                <Heading fontSize={{ base: "md", lg: "lg" }} p={2}>
+                  Select an Exercise
+                </Heading>
+                <Select
+                  placeholder="Select Exercise"
+                  value={exerciseDropdownValue}
+                  onChange={(e) => {
+                    setExerciseDropdownValue(e.target.value);
+                  }}
+                >
+                  {exercises.map((exercise) => {
+                    return (
+                      <option key={exercise.name} value={exercise.name}>
+                        {exercise.name}
+                      </option>
+                    );
+                  })}
+                </Select>
+                <Button
+                  onClick={() => {
+                    if (exerciseDropdownValue) {
+                      const exerciseData = exercises.find((exercise) => {
+                        return exercise.name === exerciseDropdownValue;
+                      });
+                      setExerciseSets([{ reps: 0, weight: 0 }]);
+                      setSelectedExercise(exerciseData);
+                    }
+                  }}
+                  w={"full"}
+                  colorScheme="green"
+                  mt={4}
+                >
+                  Select
+                </Button>
+              </GridItem>
+            )}
+
+            {/* Workout Display */}
+            <GridItem
+              borderRadius="5px"
+              rowSpan={1}
+              colSpan={selectedExercise ? 6 : { base: 6, md: 4 }}
+              boxShadow="lg"
+              rounded="lg"
+              bg="white"
+              p={4}
             >
-              {exercises.map((exercise) => {
-                return (
-                  <option key={exercise.name} value={exercise.name}>
-                    {exercise.name}
-                  </option>
-                );
+              <HStack>
+                <Editable
+                  p={4}
+                  value={workoutName}
+                  onChange={(value) => setWorkoutName(value)}
+                  fontSize="3xl"
+                  startWithEditView
+                  w={"auto"}
+                >
+                  <EditablePreview w={"auto"} />
+                  <EditableInput w={"auto"} />
+                </Editable>
+
+                <Icon as={GrEdit} />
+              </HStack>
+
+              {workout.map((exercise) => {
+                return generateExerciseTable(exercise);
               })}
-            </Select>
-          </>
-        )}
 
-        <Heading>{selectedExercise.name}</Heading>
+              {!selectedExercise && workout.length !== 0 ? (
+                <Button
+                  onClick={handleCreateWorkout}
+                  colorScheme="green"
+                  isFullWidth
+                >
+                  Save Workout
+                </Button>
+              ) : (
+                <Text mt={4} textAlign="center">
+                  Add some exercises!
+                </Text>
+              )}
+            </GridItem>
+          </Grid>
 
-        {exerciseSets.length !== 0 && (
-          <table>
-            <thead>
-              <tr>
-                <th>Set</th>
-                <th>Reps</th>
-                <th>Weight</th>
-              </tr>
-            </thead>
-            <tbody>
-              {exerciseSets.map((exercise, index) => {
-                return (
-                  <tr key={index}>
-                    <td>{index + 1}</td>
-                    <td>{exercise.reps}</td>
-                    <td>{exercise.weight}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        )}
-
-        <FormControl isInvalid={errors.reps}>
-          <FormLabel htmlFor="reps" mt={4}>
-            Reps
-          </FormLabel>
-          <NumberInput min={0} defaultValue={1}>
-            <NumberInputField name="reps" ref={register({ required: true })} />
-            <NumberInputStepper>
-              <NumberIncrementStepper />
-              <NumberDecrementStepper />
-            </NumberInputStepper>
-          </NumberInput>
-          <FormErrorMessage>Do some reps!</FormErrorMessage>
-        </FormControl>
-
-        <FormControl isInvalid={errors.weight}>
-          <FormLabel htmlFor="weight" mt={4}>
-            Weight
-          </FormLabel>
-
-          <NumberInput defaultValue={0} min={0} precision={2} step={2.5}>
-            <NumberInputField
-              name="weight"
-              ref={register({ required: true })}
-            />
-            <NumberInputStepper>
-              <NumberIncrementStepper />
-              <NumberDecrementStepper />
-            </NumberInputStepper>
-          </NumberInput>
-          <FormErrorMessage>Add some weight!</FormErrorMessage>
-        </FormControl>
-
-        <Button mt={4} type="submit">
-          Add
-        </Button>
-
-        {selectedExercise && (
-          <Button mt={4} ml={4} colorScheme="red" onClick={handleAddToWorkout}>
-            Add to workout
-          </Button>
-        )}
-      </form>
-
-      <WorkoutTable
-        workout={workout}
-        handleCreateWorkout={handleCreateWorkout}
-      />
+          {success &&
+            toast({
+              title: "New Workout Saved!",
+              description: "You can find it under the 'workouts' page",
+              status: "success",
+              duration: 5000,
+              isClosable: true,
+            })}
+        </>
+      )}
     </Layout>
   );
 }
