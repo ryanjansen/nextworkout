@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 
-export default function WorkoutRunner({ workout, finishWorkout }) {
+export default function WorkoutRunner({ workout, handleFinishWorkout }) {
   const [timeTaken, setTimeTaken] = useState(0);
   const now = dayjs();
 
@@ -37,7 +37,7 @@ export default function WorkoutRunner({ workout, finishWorkout }) {
         );
       })}
       <button
-        onClick={() => finishWorkout(now.format("YYYY-MM-DD"), timeTaken)}
+        onClick={() => handleFinishWorkout(now.format("YYYY-MM-DD"), timeTaken)}
       >
         Finish Workout
       </button>

@@ -18,6 +18,7 @@ import {
   HStack,
   Input,
   useToast,
+  Select,
 } from "@chakra-ui/react";
 import _ from "lodash";
 
@@ -92,10 +93,11 @@ const Exercises = () => {
     return (
       <GridItem
         position="relative"
-        boxShadow="lg"
-        rounded="lg"
-        verticalAlign="middle"
         borderRadius="10px"
+        boxShadow="dark-lg"
+        rounded="2xl"
+        h={"80%"}
+        w={"80%"}
         rowSpan={1}
         colSpan={1}
         _hover={{
@@ -133,6 +135,7 @@ const Exercises = () => {
             alt="abs"
             height="100%"
             width="100%"
+            fit="cover"
           />
         </Center>
       </GridItem>
@@ -157,6 +160,7 @@ const Exercises = () => {
           borderRadius="5px"
           h={"14rem"}
           colSpan={{ base: 6, md: 3, lg: 2 }}
+          p={4}
         >
           <Center h={"100%"}>
             <Text
@@ -247,13 +251,7 @@ const Exercises = () => {
         templateColumns="repeat(6, 1fr)"
         gap={4}
       >
-        <GridItem
-          boxShadow="lg"
-          rounded="lg"
-          borderRadius="5px"
-          rowSpan={1}
-          colSpan={{ base: 6, md: 3, lg: 4 }}
-        >
+        <GridItem rowSpan={1} colSpan={{ base: 6, md: 3, lg: 4 }}>
           <Text
             textAlign="right"
             fontSize="lg"
@@ -261,13 +259,11 @@ const Exercises = () => {
             _hover={{
               cursor: "pointer",
             }}
-          >
-            <h1>Body Parts</h1>
-          </Text>
+          ></Text>
           <Grid
             padding={4}
-            h="18rem"
-            width="100%"
+            h="full"
+            w="100%"
             templateRows="repeat(2, 1fr)"
             templateColumns="repeat(4, 1fr)"
             gap={2}
@@ -289,12 +285,9 @@ const Exercises = () => {
           rowSpan={1}
           colSpan={{ base: 6, md: 3, lg: 2 }}
         >
-          <Text textAlign="right" fontSize="lg" m={1}>
-            <h1>Add Exercise</h1>
-          </Text>
-          <Box padding={2} width="100%">
+          <Box p={4} width="100%">
             <form onSubmit={onSubmit}>
-              <VStack>
+              <VStack spacing={5}>
                 <Text
                   color="black"
                   fontSize={{ base: "md", md: "md", lg: "lg" }}
@@ -307,7 +300,6 @@ const Exercises = () => {
                   placeholder="eg. Push Ups"
                   ref={register({ required: true })}
                 />
-                {errors.name && <span>Please enter the name</span>}
                 <Text
                   color="black"
                   fontSize={{ base: "md", md: "md", lg: "lg" }}
@@ -315,12 +307,16 @@ const Exercises = () => {
                 >
                   Category
                 </Text>
-                <Input
+                <Select
                   name="category"
-                  placeholder="eg. Barbell"
+                  placeholder="Select Category"
                   ref={register({ required: true })}
-                />
-                {errors.category && <span>Please enter the category</span>}
+                >
+                  <option value="Barbell">Barbell</option>
+                  <option value="Dumbell">Dumbbell</option>
+                  <option value="Bodyweight">Bodyweight</option>
+                  <option value="Cable">Cable</option>
+                </Select>
                 <Text
                   color="black"
                   fontSize={{ base: "md", md: "md", lg: "lg" }}
@@ -328,14 +324,21 @@ const Exercises = () => {
                 >
                   Body Part
                 </Text>
-                <Input
+                <Select
                   name="bodypart"
-                  placeholder="eg. Chest"
+                  placeholder="Select Body Part"
                   ref={register({ required: true })}
-                />
-                {errors.bodypart && <span>Please enter the body part</span>}
-                <Button colorScheme="teal" type="submit">
-                  Submit
+                >
+                  <option value="Core">Core</option>
+                  <option value="Chest">Chest</option>
+                  <option value="Back">Back</option>
+                  <option value="Biceps">Biceps</option>
+                  <option value="Triceps">Triceps</option>
+                  <option value="Shoulders">Shoulders</option>
+                  <option value="Legs">Legs</option>
+                </Select>
+                <Button isFullWidth colorScheme="teal" type="submit">
+                  Add Exercise
                 </Button>
               </VStack>
             </form>

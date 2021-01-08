@@ -55,9 +55,28 @@ export default function Workout({ exercises, user }) {
   const generateExerciseTable = (exercise) => {
     return (
       <Box p={3} key={exercise.name}>
-        <Heading size="m" mb={4}>
-          {exercise.name}
-        </Heading>
+        <HStack>
+          <Heading p={4}>{exercise.name}</Heading>
+          <Button
+            onClick={() =>
+              handleEditExercise(
+                exercise.name,
+                exercise.exerciseID,
+                exercise.sets
+              )
+            }
+          >
+            Edit
+          </Button>
+
+          <Button
+            colorScheme="red"
+            onClick={() => handleDeleteExercise(exercise.exerciseID)}
+          >
+            Delete
+          </Button>
+        </HStack>
+
         <Table variant="striped" colorScheme="yellow">
           <Thead>
             <Tr>
@@ -101,6 +120,17 @@ export default function Workout({ exercises, user }) {
     setExerciseSets([]);
   };
 
+  const handleEditExercise = (name, _id, sets) => {
+    setSelectedExercise({ name, _id });
+    setExerciseSets(sets);
+
+    setWorkout(workout.filter((e) => e.exerciseID !== _id));
+  };
+
+  const handleDeleteExercise = (id) => {
+    setWorkout(workout.filter((e) => e.exerciseID !== id));
+  };
+
   const handleCreateWorkout = async () => {
     // Save workout to database
 
@@ -123,6 +153,12 @@ export default function Workout({ exercises, user }) {
 
   const handleAddSet = () => {
     setExerciseSets([...exerciseSets, { reps: 0, weight: 0 }]);
+  };
+
+  const handleRemoveSet = () => {
+    setExerciseSets(
+      exerciseSets.filter((_, i) => i != exerciseSets.length - 1)
+    );
   };
 
   return (
@@ -149,13 +185,15 @@ export default function Workout({ exercises, user }) {
                 borderRadius="5px"
                 rowSpan={1}
                 colSpan={6}
-                boxShadow="md"
-                rounded="md"
+                boxShadow="xl"
+                rounded="xl"
                 bg="white"
               >
                 <HStack>
                   <Heading p={4}>{selectedExercise.name}</Heading>
                   <Button onClick={handleAddSet}>Add Set</Button>
+
+                  <Button onClick={handleRemoveSet}>Remove Set</Button>
                 </HStack>
 
                 <Table variant="simple">
@@ -233,8 +271,8 @@ export default function Workout({ exercises, user }) {
                 rowSpan={1}
                 h={"11rem"}
                 colSpan={{ base: 6, md: 2 }}
-                boxShadow="md"
-                rounded="md"
+                boxShadow="lg"
+                rounded="lg"
                 bg="white"
               >
                 <Heading fontSize={{ base: "md", lg: "lg" }} p={2}>
@@ -279,8 +317,8 @@ export default function Workout({ exercises, user }) {
               borderRadius="5px"
               rowSpan={1}
               colSpan={selectedExercise ? 6 : { base: 6, md: 4 }}
-              boxShadow="lg"
-              rounded="lg"
+              boxShadow="xl"
+              rounded="xl"
               bg="white"
               p={4}
             >

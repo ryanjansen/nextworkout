@@ -57,6 +57,8 @@ export default function Workouts({ workouts, user }) {
           p={2}
           textAlign="center"
           cursor="pointer"
+          transition="all 0.15s ease-out"
+          _hover={{ transform: "translateY(-5px)" }}
         >
           <Text
             m={2}
@@ -91,11 +93,15 @@ export default function Workouts({ workouts, user }) {
               )}
             </ModalBody>
             <ModalFooter>
-              <Button mr={4} colorScheme="green" onClick={handleStartWorkout}>
+              <Button
+                mr={4}
+                colorScheme="green"
+                onClick={() => handleStartWorkout(workout)}
+              >
                 Start
               </Button>
               <Button colorScheme="red" onClick={handleStartWorkout}>
-                Edit
+                Delete
               </Button>
             </ModalFooter>
           </ModalContent>
@@ -174,21 +180,21 @@ export default function Workouts({ workouts, user }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      {user && (
+      {user && !runningWorkout && (
         <>
           <Grid
             pb={25}
             pt={12}
             as="main"
-            h={{ base: "70rem", md: "2xl", lg: "2xl" }}
-            templateColumns="repeat(6, 1fr)"
+            h="auto"
+            templateColumns={{ base: "repeat(6, 1fr)", xl: "repeat(8, 1fr)" }}
             autoRows="14rem"
             gap={4}
           >
             <GridItem
               borderRadius="5px"
               rowSpan={1}
-              colSpan={{ base: 6, md: 3, lg: 4 }}
+              colSpan={{ base: 6, md: 3, lg: 4, xl: 6 }}
               boxShadow="lg"
               rounded="lg"
               bg="white"
@@ -199,8 +205,6 @@ export default function Workouts({ workouts, user }) {
               borderRadius="5px"
               rowSpan={1}
               colSpan={{ base: 6, md: 3, lg: 2 }}
-              boxShadow="md"
-              rounded="md"
               bg="white"
               align="center"
             >
@@ -224,6 +228,10 @@ export default function Workouts({ workouts, user }) {
             ))}
           </Grid>
         </>
+      )}
+
+      {runningWorkout && (
+        <WorkoutRunner handleFinishWorkout={handleFinishWorkout} />
       )}
     </Layout>
   );
