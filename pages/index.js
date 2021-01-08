@@ -17,16 +17,17 @@ export default function Home({ user }) {
         {user && (
           <>
             <Grid
-              h={{ base: "70rem", md: "xl" }}
-              templateRows="auto"
-              templateColumns="repeat(3, 1fr)"
+              padding={4}
+              h={{ base: "2xl", md: "xl", lg: "xl" }}
+              autoRows="15rem"
+              templateColumns="repeat(6, 1fr)"
               gap={4}
             >
               <GridItem
+                boxShadow="1px 1px 1px 1px black"
                 borderRadius="5px"
                 rowSpan={1}
-                colSpan={{ base: 3, md: 2 }}
-                bg="#cfe2fa"
+                colSpan={{ base: 6, md: 3, lg: 4 }}
               >
                 <Text
                   textAlign="right"
@@ -44,10 +45,10 @@ export default function Home({ user }) {
                 </Text>
               </GridItem>
               <GridItem
+                boxShadow="1px 1px 1px 1px black"
                 borderRadius="5px"
                 rowSpan={1}
-                colSpan={{ base: 3, md: 1 }}
-                bg="#cfe2fa"
+                colSpan={{ base: 6, md: 3, lg: 2 }}
               >
                 <Text
                   textAlign="right"
@@ -65,24 +66,24 @@ export default function Home({ user }) {
                 </Text>
               </GridItem>
               <GridItem
+                boxShadow="1px 1px 1px 1px black"
                 borderRadius="5px"
-                colSpan={{ base: 3, md: 1 }}
-                bg="#cfe2fa"
+                colSpan={{ base: 6, md: 3, lg: 2 }}
               />
               <GridItem
+                boxShadow="1px 1px 1px 1px black"
                 borderRadius="5px"
-                colSpan={{ base: 3, md: 1 }}
-                bg="#cfe2fa"
+                colSpan={{ base: 6, md: 3, lg: 2 }}
               />
               <GridItem
+                boxShadow="1px 1px 1px 1px black"
                 borderRadius="5px"
-                colSpan={{ base: 3, md: 1 }}
-                bg="#cfe2fa"
+                colSpan={{ base: 6, md: 3, lg: 2 }}
               />
               <GridItem
+                boxShadow="1px 1px 1px 1px black"
                 borderRadius="5px"
-                colSpan={{ base: 3, md: 1 }}
-                bg="#cfe2fa"
+                colSpan={{ base: 6, md: 3, lg: 2 }}
               />
             </Grid>
           </>
