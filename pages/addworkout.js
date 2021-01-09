@@ -375,7 +375,7 @@ export default function Workout({ exercises, user }) {
                   <Input
                     p={4}
                     value={workoutName}
-                    onChange={(e) => setWorkoutName(e.value)}
+                    onChange={(e) => setWorkoutName(e.target.value)}
                     fontSize="3xl"
                     startWithEditView
                     w={"auto"}
