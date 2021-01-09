@@ -3,7 +3,16 @@ import Link from "next/link";
 import styles from "../styles/Home.module.css";
 import auth0 from "../utils/auth0";
 import Layout from "../components/layout";
-import { Text, Grid, GridItem } from "@chakra-ui/react";
+import {
+  Text,
+  Grid,
+  GridItem,
+  Container,
+  Heading,
+  Button,
+  Box,
+  Flex,
+} from "@chakra-ui/react";
 
 export default function Home({ user }) {
   return (

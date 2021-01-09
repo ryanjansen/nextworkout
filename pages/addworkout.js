@@ -48,16 +48,34 @@ export default function Workout({ exercises, user }) {
   const [exerciseSets, setExerciseSets] = useState([]);
   const [workout, setWorkout] = useState([]);
   const [workoutName, setWorkoutName] = useState("New Workout");
-  const [success, setSuccess] = useState(false);
 
   const toast = createStandaloneToast();
 
   const generateExerciseTable = (exercise) => {
     return (
       <Box p={3} key={exercise.name}>
-        <Heading size="m" mb={4}>
-          {exercise.name}
-        </Heading>
+        <HStack>
+          <Heading p={4}>{exercise.name}</Heading>
+          <Button
+            onClick={() =>
+              handleEditExercise(
+                exercise.name,
+                exercise.exerciseID,
+                exercise.sets
+              )
+            }
+          >
+            Edit
+          </Button>
+
+          <Button
+            colorScheme="red"
+            onClick={() => handleDeleteExercise(exercise.exerciseID)}
+          >
+            Delete
+          </Button>
+        </HStack>
+
         <Table variant="striped" colorScheme="yellow">
           <Thead>
             <Tr>
@@ -101,6 +119,17 @@ export default function Workout({ exercises, user }) {
     setExerciseSets([]);
   };
 
+  const handleEditExercise = (name, _id, sets) => {
+    setSelectedExercise({ name, _id });
+    setExerciseSets(sets);
+
+    setWorkout(workout.filter((e) => e.exerciseID !== _id));
+  };
+
+  const handleDeleteExercise = (id) => {
+    setWorkout(workout.filter((e) => e.exerciseID !== id));
+  };
+
   const handleCreateWorkout = async () => {
     // Save workout to database
 
@@ -114,8 +143,14 @@ export default function Workout({ exercises, user }) {
       const data = await GraphQLClient.request(mutation, variables);
       console.log(data);
       setWorkout([]);
-      setSuccess(true);
-      setTimeout(() => setSuccess(false), 5000);
+      toast({
+        title: "New Workout Saved!",
+        description: "You can find it under the 'workouts' page",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+      setWorkoutName("New Workout");
     } catch (error) {
       console.error(error);
     }
@@ -123,6 +158,12 @@ export default function Workout({ exercises, user }) {
 
   const handleAddSet = () => {
     setExerciseSets([...exerciseSets, { reps: 0, weight: 0 }]);
+  };
+
+  const handleRemoveSet = () => {
+    setExerciseSets(
+      exerciseSets.filter((_, i) => i != exerciseSets.length - 1)
+    );
   };
 
   return (
@@ -137,7 +178,6 @@ export default function Workout({ exercises, user }) {
           <Grid
             pt={12}
             pb={8}
-            as="main"
             h="auto"
             templateColumns="repeat(6, 1fr)"
             autoRows="auto"
@@ -149,13 +189,15 @@ export default function Workout({ exercises, user }) {
                 borderRadius="5px"
                 rowSpan={1}
                 colSpan={6}
-                boxShadow="md"
-                rounded="md"
+                boxShadow="xl"
+                rounded="xl"
                 bg="white"
               >
                 <HStack>
                   <Heading p={4}>{selectedExercise.name}</Heading>
                   <Button onClick={handleAddSet}>Add Set</Button>
+
+                  <Button onClick={handleRemoveSet}>Remove Set</Button>
                 </HStack>
 
                 <Table variant="simple">
@@ -233,8 +275,8 @@ export default function Workout({ exercises, user }) {
                 rowSpan={1}
                 h={"11rem"}
                 colSpan={{ base: 6, md: 2 }}
-                boxShadow="md"
-                rounded="md"
+                boxShadow="lg"
+                rounded="lg"
                 bg="white"
               >
                 <Heading fontSize={{ base: "md", lg: "lg" }} p={2}>
@@ -279,8 +321,8 @@ export default function Workout({ exercises, user }) {
               borderRadius="5px"
               rowSpan={1}
               colSpan={selectedExercise ? 6 : { base: 6, md: 4 }}
-              boxShadow="lg"
-              rounded="lg"
+              boxShadow="xl"
+              rounded="xl"
               bg="white"
               p={4}
             >
@@ -319,15 +361,6 @@ export default function Workout({ exercises, user }) {
               )}
             </GridItem>
           </Grid>
-
-          {success &&
-            toast({
-              title: "New Workout Saved!",
-              description: "You can find it under the 'workouts' page",
-              status: "success",
-              duration: 5000,
-              isClosable: true,
-            })}
         </>
       )}
     </Layout>
