@@ -126,6 +126,16 @@ const Exercises = () => {
         onClick={() => setSelectedBodyPart(bodypart)}
       >
         <Center h={"100%"}>
+          <Text
+            position="absolute"
+            zIndex={20}
+            color="white"
+            textAlign="center"
+            fontSize="2xl"
+            fontWeight="medium"
+          >
+            {bodypart}
+          </Text>
           <Box
             borderRadius="10px"
             position="absolute"
@@ -133,21 +143,12 @@ const Exercises = () => {
             height="100%"
             bg="grey"
             opacity={selectedBodyPart === bodypart ? 0 : 0.6}
-            zIndex={20}
+            zIndex={10}
             _hover={{
               opacity: "0",
             }}
           />
-          <Text
-            position="absolute"
-            zIndex={10}
-            color="white"
-            textAlign="center"
-            fontSize={{ base: "md", md: "md", lg: "lg" }}
-            m={1}
-          >
-            {bodypart}
-          </Text>
+
           <Image
             borderRadius="10px"
             position="absolute"
@@ -278,13 +279,16 @@ const Exercises = () => {
         gap={4}
       >
         <GridItem
-          boxShadow="lg"
-          rounded="lg"
+          boxShadow="xl"
+          rounded="xl"
           borderRadius="5px"
           rowSpan={1}
           colSpan={{ base: 6, md: 6, xl: 2 }}
         >
           <Box p={4} width="100%">
+            <Text fontSize="xl" mb={4} ml={2} fontWeight="medium">
+              Add an Exercise
+            </Text>
             <form onSubmit={onSubmit}>
               <VStack spacing={5}>
                 <Text
@@ -344,14 +348,9 @@ const Exercises = () => {
           </Box>
         </GridItem>
         <GridItem rowSpan={1} colSpan={{ base: 6, xl: 4 }}>
-          <Text
-            textAlign="right"
-            fontSize="lg"
-            m={1}
-            _hover={{
-              cursor: "pointer",
-            }}
-          ></Text>
+          <Text fontSize="xl" mb={4} ml={2} fontWeight="medium">
+            Filter by Bodypart
+          </Text>
           <Grid
             padding={4}
             h={"27rem"}

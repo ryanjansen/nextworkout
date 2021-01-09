@@ -17,6 +17,8 @@ export default function WorkoutRunner({ workout, handleFinishWorkout }) {
   const [timeTaken, setTimeTaken] = useState(0);
   const toast = createStandaloneToast();
 
+  const now = dayjs();
+
   const { register, handleSubmit, errors } = useForm();
 
   useEffect(() => {
