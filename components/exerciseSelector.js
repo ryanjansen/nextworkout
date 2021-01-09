@@ -22,18 +22,20 @@ import {
   createStandaloneToast,
   Heading,
   Skeleton,
+  Collapse,
+  useDisclosure,
 } from "@chakra-ui/react";
 import _ from "lodash";
 
 const fetcher = (...args) => GraphQLClient.request(...args);
 
-const Exercises = () => {
+const ExerciseSelector = ({ toggle, setSelectedExercise }) => {
   const router = useRouter();
   const [exercises, setExercises] = useState();
   const [user, setUser] = useState();
   const [selectedBodyPart, setSelectedBodyPart] = useState("All");
 
-  const { error, data } = useSWR(getExercisesQuery, fetcher);
+  const { data } = useSWR(getExercisesQuery, fetcher);
   const toast = createStandaloneToast();
 
   useEffect(() => {
@@ -48,8 +50,6 @@ const Exercises = () => {
     };
     getUser();
   }, []);
-
-  console.log(data);
 
   useEffect(() => {
     if (data) {
@@ -204,7 +204,15 @@ const Exercises = () => {
           rounded="lg"
           borderRadius="5px"
           h={"14rem"}
-          colSpan={{ base: 6, md: 2, xl: 1 }}
+          cursor="pointer"
+          transition="all 0.1s ease-out"
+          rowSpan={1}
+          colSpan={{ base: 6, md: 2 }}
+          _hover={{ transform: "translateY(-5px)", boxShadow: "2xl" }}
+          onClick={() => {
+            setSelectedExercise(exercise);
+            toggle();
+          }}
         >
           <Center h={"100%"}>
             <VStack>
@@ -252,6 +260,82 @@ const Exercises = () => {
       : noExercises();
   };
 
+  const AddExerciseForm = () => {
+    return (
+      <GridItem
+        boxShadow="xl"
+        rounded="xl"
+        borderRadius="5px"
+        rowSpan={1}
+        colStart={1}
+        colEnd={{ base: 8, xl: 8 }}
+      >
+        <Box p={4} width="100%">
+          <Text fontSize="xl" mb={4} ml={2} fontWeight="medium">
+            Create an Exercise
+          </Text>
+          <form onSubmit={onSubmit}>
+            <VStack spacing={5}>
+              <Text
+                color="black"
+                fontSize={{ base: "md", md: "md", lg: "lg" }}
+                m={1}
+              >
+                Exercise Name
+              </Text>
+              <Input
+                name="name"
+                placeholder="eg. Push Ups"
+                ref={register({ required: true })}
+              />
+              <Text
+                color="black"
+                fontSize={{ base: "md", md: "md", lg: "lg" }}
+                m={1}
+              >
+                Category
+              </Text>
+              <Select
+                name="category"
+                placeholder="Select Category"
+                ref={register({ required: true })}
+              >
+                <option value="Barbell">Barbell</option>
+                <option value="Dumbell">Dumbbell</option>
+                <option value="Bodyweight">Bodyweight</option>
+                <option value="Machine">Machine</option>
+                <option value="Cable">Cable</option>
+              </Select>
+              <Text
+                color="black"
+                fontSize={{ base: "md", md: "md", lg: "lg" }}
+                m={1}
+              >
+                Body Part
+              </Text>
+              <Select
+                name="bodypart"
+                placeholder="Select Body Part"
+                ref={register({ required: true })}
+              >
+                <option value="Core">Core</option>
+                <option value="Chest">Chest</option>
+                <option value="Back">Back</option>
+                <option value="Biceps">Biceps</option>
+                <option value="Triceps">Triceps</option>
+                <option value="Shoulders">Shoulders</option>
+                <option value="Legs">Legs</option>
+              </Select>
+              <Button p={4} colorScheme="teal" type="submit">
+                Add Exercise
+              </Button>
+            </VStack>
+          </form>
+        </Box>
+      </GridItem>
+    );
+  };
+
   if (!user) {
     return (
       <Layout user="test">
@@ -263,101 +347,34 @@ const Exercises = () => {
   }
 
   return (
-    <Layout user={user}>
-      <Head>
-        <title>Next Workout | Exercises</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+    <Box
+      bg="white"
+      p={4}
+      mb={{ base: 12, md: 0 }}
+      ml={{ base: 0, md: 64 }}
+      as="main"
+      overflow="auto"
+      h={"full"}
+    >
       <Heading pt={12} ml={4}>
-        Exercises
+        Select an Exercise
       </Heading>
       <Grid
         padding={4}
-        h={{ base: "auto", md: "auto" }}
+        h="auto"
         autoRows="auto"
         templateColumns="repeat(6, 1fr)"
         gap={4}
       >
-        <GridItem
-          boxShadow="xl"
-          rounded="xl"
-          borderRadius="5px"
-          rowSpan={1}
-          colSpan={{ base: 6, md: 6, xl: 2 }}
-        >
-          <Box p={4} width="100%">
-            <Text fontSize="xl" mb={4} ml={2} fontWeight="medium">
-              Add an Exercise
-            </Text>
-            <form onSubmit={onSubmit}>
-              <VStack spacing={5}>
-                <Text
-                  color="black"
-                  fontSize={{ base: "md", md: "md", lg: "lg" }}
-                  m={1}
-                >
-                  Exercise Name
-                </Text>
-                <Input
-                  name="name"
-                  placeholder="eg. Push Ups"
-                  ref={register({ required: true })}
-                />
-                <Text
-                  color="black"
-                  fontSize={{ base: "md", md: "md", lg: "lg" }}
-                  m={1}
-                >
-                  Category
-                </Text>
-                <Select
-                  name="category"
-                  placeholder="Select Category"
-                  ref={register({ required: true })}
-                >
-                  <option value="Barbell">Barbell</option>
-                  <option value="Dumbell">Dumbbell</option>
-                  <option value="Bodyweight">Bodyweight</option>
-                  <option value="Machine">Machine</option>
-                  <option value="Cable">Cable</option>
-                </Select>
-                <Text
-                  color="black"
-                  fontSize={{ base: "md", md: "md", lg: "lg" }}
-                  m={1}
-                >
-                  Body Part
-                </Text>
-                <Select
-                  name="bodypart"
-                  placeholder="Select Body Part"
-                  ref={register({ required: true })}
-                >
-                  <option value="Core">Core</option>
-                  <option value="Chest">Chest</option>
-                  <option value="Back">Back</option>
-                  <option value="Biceps">Biceps</option>
-                  <option value="Triceps">Triceps</option>
-                  <option value="Shoulders">Shoulders</option>
-                  <option value="Legs">Legs</option>
-                </Select>
-                <Button isFullWidth colorScheme="teal" type="submit">
-                  Add Exercise
-                </Button>
-              </VStack>
-            </form>
-          </Box>
-        </GridItem>
-        <GridItem rowSpan={1} colSpan={{ base: 6, xl: 4 }}>
+        <GridItem rowSpan={1} colSpan={6}>
           <Text fontSize="xl" mb={4} ml={2} fontWeight="medium">
             Filter by Bodypart
           </Text>
           <Grid
             padding={4}
-            h={"27rem"}
-            w="100%"
-            templateRows="repeat(2, 1fr)"
-            templateColumns="repeat(4, 1fr)"
+            h={{ base: "27rem", xl: " 16rem" }}
+            templateRows={{ base: "repeat(2, 1fr)", xl: "repeat(1, 1fr)" }}
+            templateColumns={{ base: "repeat(4, 1fr)", xl: "repeat(8, 1fr)" }}
             gap={2}
           >
             {renderBodyPart("Core", "/images/abs.jpg")}
@@ -371,10 +388,14 @@ const Exercises = () => {
           </Grid>
         </GridItem>
 
-        {exercises ? renderExercises(exercises) : <h1>Loading...</h1>}
+        {exercises ? renderExercises(exercises) : <Heading>Loading...</Heading>}
+
+        {/* Form */}
+
+        <AddExerciseForm />
       </Grid>
-    </Layout>
+    </Box>
   );
 };
 
-export default Exercises;
+export default ExerciseSelector;

@@ -197,7 +197,7 @@ export default function Workouts({ loadedWorkouts, user }) {
             <Tr>
               <Th>Set</Th>
               <Th>Reps</Th>
-              <Th>Weight</Th>
+              <Th>Kg</Th>
             </Tr>
           </Thead>
           <Tbody>
@@ -236,16 +236,6 @@ export default function Workouts({ loadedWorkouts, user }) {
             autoRows="14rem"
             gap={4}
           >
-            {/* <GridItem
-              borderRadius="5px"
-              rowSpan={1}
-              colSpan={{ base: 6, md: 3, lg: 4, xl: 6 }}
-              boxShadow="lg"
-              rounded="lg"
-              bg="white"
-            >
-              <Text>Workouts Overview, Continue current workout</Text>
-            </GridItem> */}
             <GridItem
               borderRadius="5px"
               rowSpan={1}

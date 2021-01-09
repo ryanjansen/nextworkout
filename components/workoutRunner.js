@@ -83,7 +83,7 @@ export default function WorkoutRunner({ workout, handleFinishWorkout }) {
       </Heading>
       <Timer />
       <form onSubmit={handleSubmit(onSubmit)}>
-        {workout.exercises.map((exercise, eIndex) => {
+        {workout.exercises.map((exercise) => {
           return (
             <Box key={exercise.name}>
               <Heading textAlign="center" pb={4} pt={4}>
@@ -94,7 +94,6 @@ export default function WorkoutRunner({ workout, handleFinishWorkout }) {
                   <HStack
                     spacing={5}
                     w="100vw"
-                    bg={index % 2 === 0 ? "yellow.300" : "white"}
                     textAlign="center"
                     justify="center"
                   >
