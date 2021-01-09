@@ -1,4 +1,5 @@
 import { useForm } from "react-hook-form";
+import Head from "next/head";
 import Layout from "../components/layout";
 import GraphQLClient from "../utils/graphQLClient";
 import { useState, useEffect } from "react";
@@ -19,6 +20,8 @@ import {
   Input,
   Select,
   createStandaloneToast,
+  Heading,
+  Skeleton,
 } from "@chakra-ui/react";
 import _ from "lodash";
 
@@ -204,7 +207,11 @@ const Exercises = () => {
         >
           <Center h={"100%"}>
             <VStack>
-              <Text fontSize={{ base: "lg", md: "lg", lg: "xl" }} m={1}>
+              <Text
+                textAlign="center"
+                fontSize={{ base: "lg", md: "lg", lg: "xl" }}
+                m={1}
+              >
                 {exercise.name}
               </Text>
               <Text
@@ -244,8 +251,25 @@ const Exercises = () => {
       : noExercises();
   };
 
+  if (!user) {
+    return (
+      <Layout user="test">
+        <Skeleton height="33vh" />
+        <Skeleton height="33vh" />
+        <Skeleton height="33vh" />
+      </Layout>
+    );
+  }
+
   return (
     <Layout user={user}>
+      <Head>
+        <title>Next Workout | Exercises</title>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      <Heading pt={12} ml={4}>
+        Exercises
+      </Heading>
       <Grid
         padding={4}
         h={{ base: "auto", md: "auto" }}

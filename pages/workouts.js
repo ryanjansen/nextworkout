@@ -225,6 +225,9 @@ export default function Workouts({ loadedWorkouts, user }) {
 
       {user && !runningWorkout && (
         <>
+          <Heading pt={12} ml={4}>
+            Workouts
+          </Heading>
           <Grid
             pb={25}
             pt={12}
@@ -233,7 +236,7 @@ export default function Workouts({ loadedWorkouts, user }) {
             autoRows="14rem"
             gap={4}
           >
-            <GridItem
+            {/* <GridItem
               borderRadius="5px"
               rowSpan={1}
               colSpan={{ base: 6, md: 3, lg: 4, xl: 6 }}
@@ -242,7 +245,7 @@ export default function Workouts({ loadedWorkouts, user }) {
               bg="white"
             >
               <Text>Workouts Overview, Continue current workout</Text>
-            </GridItem>
+            </GridItem> */}
             <GridItem
               borderRadius="5px"
               rowSpan={1}
