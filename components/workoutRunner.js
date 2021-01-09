@@ -139,12 +139,12 @@ export default function WorkoutRunner({ workout, handleFinishWorkout }) {
         })}
 
         <Button
+          isFullWidth
           type="submit"
           colorScheme="green"
           size="lg"
           fontSize="3xl"
-          p={12}
-          m={"0 auto"}
+
           // onClick={() => handleFinishWorkout(now.format("YYYY-MM-DD"), timeTaken)}
         >
           Finish Workout
