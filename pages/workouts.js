@@ -1,4 +1,5 @@
 import Layout from "../components/layout";
+import dayjs from "dayjs";
 import GraphQLClient from "../utils/graphQLClient";
 import { getWorkoutsByUser } from "../graphql/queries";
 import { useState } from "react";
@@ -45,6 +46,7 @@ import Head from "next/head";
 export default function Workouts({ loadedWorkouts, user }) {
   const [workouts, setWorkouts] = useState(loadedWorkouts);
   const [runningWorkout, setRunningWorkout] = useState();
+  const [date, setDate] = useState();
 
   const toast = createStandaloneToast();
 
@@ -81,7 +83,12 @@ export default function Workouts({ loadedWorkouts, user }) {
           </Text>
         </GridItem>
 
-        <Modal onClose={onClose} size="xl" isOpen={isOpen}>
+        <Modal
+          onClose={onClose}
+          size="xl"
+          isOpen={isOpen}
+          scrollBehavior="inside"
+        >
           <ModalOverlay />
           <ModalContent>
             <ModalHeader>{workout.name}</ModalHeader>
@@ -100,7 +107,7 @@ export default function Workouts({ loadedWorkouts, user }) {
                 Start
               </Button>
 
-              <Popover placement="right">
+              <Popover placement="top">
                 {({ onClose }) => (
                   <>
                     <PopoverTrigger>
@@ -139,21 +146,23 @@ export default function Workouts({ loadedWorkouts, user }) {
   const handleStartWorkout = (workout) => {
     console.log(workout);
     setRunningWorkout(workout);
+    setDate(dayjs().format("YYYY-MM-DD").toString());
   };
 
-  const handleFinishWorkout = async (date, timeTaken) => {
+  const handleFinishWorkout = async (timeTaken, exercises) => {
     const { mutation, variables } = createCompletedWorkout(
       runningWorkout.name,
       user.userID,
       runningWorkout._id,
       date,
       timeTaken,
-      runningWorkout.exercises
+      exercises
     );
     try {
       const data = await GraphQLClient.request(mutation, variables);
       console.log(data);
       setRunningWorkout();
+      setDate();
     } catch (error) {
       console.error(error);
     }

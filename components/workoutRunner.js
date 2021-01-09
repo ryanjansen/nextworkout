@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import dayjs from "dayjs";
 import {
   Container,
@@ -9,12 +10,14 @@ import {
   Box,
   Input,
   Button,
+  createStandaloneToast,
 } from "@chakra-ui/react";
 
 export default function WorkoutRunner({ workout, handleFinishWorkout }) {
-  console.log("running");
   const [timeTaken, setTimeTaken] = useState(0);
-  const now = dayjs();
+  const toast = createStandaloneToast();
+
+  const { register, handleSubmit, errors } = useForm();
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -26,7 +29,7 @@ export default function WorkoutRunner({ workout, handleFinishWorkout }) {
 
   const Timer = () => {
     let minutes = Math.floor(timeTaken / 60);
-    let seconds = timeTaken - minutes;
+    let seconds = timeTaken - minutes * 60;
     minutes = minutes < 10 ? "0" + minutes : minutes;
     seconds = seconds < 10 ? "0" + seconds : seconds;
 
@@ -35,6 +38,37 @@ export default function WorkoutRunner({ workout, handleFinishWorkout }) {
         {minutes}:{seconds}
       </Heading>
     );
+  };
+
+  const onSubmit = (data) => {
+    const newExercises = [];
+    for (const [id, sets] of Object.entries(data)) {
+      const completedSets = sets.sets.filter((set) => set.completed);
+      completedSets.forEach((set) => {
+        set.reps = parseInt(set.reps);
+        set.weight = parseFloat(set.weight);
+        delete set.completed;
+      });
+      if (completedSets.length !== 0) {
+        const exerciseName = workout.exercises.find(
+          (exercise) => exercise.exerciseData === id
+        ).name;
+        newExercises.push({
+          exerciseData: id,
+          name: exerciseName,
+          sets: completedSets,
+        });
+      }
+    }
+    console.log(newExercises);
+    toast({
+      title: "Workout Completed!",
+      description: "You can find it under the 'history' page",
+      status: "success",
+      duration: 5000,
+      isClosable: true,
+    });
+    handleFinishWorkout(timeTaken, newExercises);
   };
 
   return (
@@ -46,61 +80,74 @@ export default function WorkoutRunner({ workout, handleFinishWorkout }) {
         {now.format("DD MMMM YYYY (HH:mm)").toString()}
       </Heading>
       <Timer />
-      {workout.exercises.map((exercise) => {
-        return (
-          <Box key={exercise.name}>
-            <Heading textAlign="center" pb={4} pt={4}>
-              {exercise.name}
-            </Heading>
-            {exercise.sets.map((set, index) => {
-              return (
-                <HStack
-                  spacing={5}
-                  w="100vw"
-                  bg={index % 2 === 0 ? "yellow.300" : "white"}
-                  textAlign="center"
-                  justify="center"
-                >
-                  <Text
-                    pr={{ base: 2, md: 4 }}
-                    fontSize={{ base: "3xl", md: "4xl" }}
+      <form onSubmit={handleSubmit(onSubmit)}>
+        {workout.exercises.map((exercise, eIndex) => {
+          return (
+            <Box key={exercise.name}>
+              <Heading textAlign="center" pb={4} pt={4}>
+                {exercise.name}
+              </Heading>
+              {exercise.sets.map((set, index) => {
+                return (
+                  <HStack
+                    spacing={5}
+                    w="100vw"
+                    bg={index % 2 === 0 ? "yellow.300" : "white"}
+                    textAlign="center"
+                    justify="center"
                   >
-                    Set {index + 1}
-                  </Text>
-                  <Text
-                    pr={{ base: 2, md: 4 }}
-                    fontSize={{ base: "3xl", md: "4xl" }}
-                  >
-                    <Input
-                      fontSize={{ base: "3xl", md: "4xl" }}
-                      w="5rem"
-                      defaultValue={set.reps}
-                    />{" "}
-                    reps x{" "}
-                    <Input
-                      fontSize={{ base: "3xl", md: "4xl" }}
-                      w="7rem"
-                      defaultValue={set.weight}
-                    />{" "}
-                    kg
-                  </Text>
-                  <Checkbox size="lg" colorScheme="green" />
-                </HStack>
-              );
-            })}
-          </Box>
-        );
-      })}
-      <Button
-        colorScheme="green"
-        size="lg"
-        fontSize="3xl"
-        p={12}
-        mt={4}
-        onClick={() => handleFinishWorkout(now.format("YYYY-MM-DD"), timeTaken)}
-      >
-        Finish Workout
-      </Button>
+                    <Text
+                      pr={{ base: 1, md: 4 }}
+                      fontSize={{ base: "2xl", md: "4xl" }}
+                    >
+                      Set {index + 1}
+                    </Text>
+                    <Text
+                      pr={{ base: 1, md: 4 }}
+                      fontSize={{ base: "2xl", md: "4xl" }}
+                    >
+                      <Input
+                        fontSize={{ base: "2xl", md: "4xl" }}
+                        w={{ base: "3rem", md: "5rem" }}
+                        defaultValue={set.reps}
+                        name={`${exercise.exerciseData}.sets[${index}].reps`}
+                        ref={register}
+                      />{" "}
+                      reps x{" "}
+                      <Input
+                        fontSize={{ base: "2xl", md: "4xl" }}
+                        w={{ base: "4rem", md: "7rem" }}
+                        defaultValue={set.weight}
+                        name={`${exercise.exerciseData}.sets[${index}].weight`}
+                        ref={register}
+                      />{" "}
+                      kg
+                    </Text>
+                    <Checkbox
+                      size="lg"
+                      colorScheme="green"
+                      name={`${exercise.exerciseData}.sets[${index}].completed`}
+                      ref={register}
+                    />
+                  </HStack>
+                );
+              })}
+            </Box>
+          );
+        })}
+
+        <Button
+          type="submit"
+          colorScheme="green"
+          size="lg"
+          fontSize="3xl"
+          p={12}
+          m={"0 auto"}
+          // onClick={() => handleFinishWorkout(now.format("YYYY-MM-DD"), timeTaken)}
+        >
+          Finish Workout
+        </Button>
+      </form>
     </Container>
   );
 }

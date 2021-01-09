@@ -150,6 +150,7 @@ export default function Workout({ exercises, user }) {
         duration: 5000,
         isClosable: true,
       });
+      setWorkoutName("New Workout");
     } catch (error) {
       console.error(error);
     }

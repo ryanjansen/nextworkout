@@ -3,6 +3,9 @@ const getExercisesQuery = gql`
   query {
     allExercises {
       data {
+        user {
+          _id
+        }
         _id
         name
         category

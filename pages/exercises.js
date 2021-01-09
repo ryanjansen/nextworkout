@@ -17,8 +17,8 @@ import {
   Button,
   HStack,
   Input,
-  useToast,
   Select,
+  createStandaloneToast,
 } from "@chakra-ui/react";
 import _ from "lodash";
 
@@ -31,21 +31,22 @@ const Exercises = () => {
   const [selectedBodyPart, setSelectedBodyPart] = useState("All");
 
   const { error, data } = useSWR(getExercisesQuery, fetcher);
+  const toast = createStandaloneToast();
 
   useEffect(() => {
     const getUser = async () => {
       const res = await fetch("/api/me");
-      console.log(res.status);
       if (res.status == 200) {
         const user = await res.json();
         setUser(user);
-        console.log(user);
       } else {
         router.push("/");
       }
     };
     getUser();
   }, []);
+
+  console.log(data);
 
   useEffect(() => {
     if (data) {
@@ -69,12 +70,19 @@ const Exercises = () => {
         ...exercises,
         newExercise.createExerciseData,
       ]);
+      toast({
+        title: "Exercise Created.",
+        description: `${exercise.name} has been added to your list of exercises!`,
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      });
     } catch (error) {
       console.error(error);
     }
   });
 
-  const handleDeleteExercise = async (exerciseID) => {
+  const handleDeleteExercise = async (exerciseID, exerciseName) => {
     const { mutation, variables } = deleteExercise(exerciseID);
 
     try {
@@ -85,10 +93,18 @@ const Exercises = () => {
           (exercise) => exercise._id !== deletedExercise.deleteExerciseData._id
         );
       });
+      toast({
+        title: "Exercise Deleted",
+        description: `${exerciseName} has been deleted`,
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
     } catch (error) {
       console.error(error);
     }
   };
+
   const renderBodyPart = (bodypart, image) => {
     return (
       <GridItem
@@ -184,7 +200,7 @@ const Exercises = () => {
           rounded="lg"
           borderRadius="5px"
           h={"14rem"}
-          colSpan={{ base: 6, md: 3, lg: 2 }}
+          colSpan={{ base: 6, md: 2, xl: 1 }}
         >
           <Center h={"100%"}>
             <VStack>
@@ -205,15 +221,19 @@ const Exercises = () => {
               >
                 {exercise.bodypart}
               </Text>
-              <HStack>
-                <Button colorScheme="teal">Edit</Button>
-                <Button
-                  colorScheme="red"
-                  onClick={() => handleDeleteExercise(exercise._id)}
-                >
-                  Delete
-                </Button>
-              </HStack>
+              {exercise.user && (
+                <HStack>
+                  <Button colorScheme="teal">Edit</Button>
+                  <Button
+                    colorScheme="red"
+                    onClick={() =>
+                      handleDeleteExercise(exercise._id, exercise.name)
+                    }
+                  >
+                    Delete
+                  </Button>
+                </HStack>
+              )}
             </VStack>
           </Center>
         </GridItem>
@@ -222,25 +242,6 @@ const Exercises = () => {
     return renderedExerciseList.length != 0
       ? renderedExerciseList
       : noExercises();
-  };
-
-  const exersiceCreatedSuccess = (exerciseName) => {
-    const toast = useToast();
-    return (
-      <Button
-        onClick={() =>
-          toast({
-            title: "Exercise Created.",
-            description: `${exerciseName} has been added to your list of exercises!`,
-            status: "success",
-            duration: 9000,
-            isClosable: true,
-          })
-        }
-      >
-        Show Success Toast
-      </Button>
-    );
   };
 
   return (
@@ -252,39 +253,12 @@ const Exercises = () => {
         templateColumns="repeat(6, 1fr)"
         gap={4}
       >
-        <GridItem rowSpan={1} colSpan={{ base: 6, xl: 4 }}>
-          <Text
-            textAlign="right"
-            fontSize="lg"
-            m={1}
-            _hover={{
-              cursor: "pointer",
-            }}
-          ></Text>
-          <Grid
-            padding={4}
-            h={"27rem"}
-            w="100%"
-            templateRows="repeat(2, 1fr)"
-            templateColumns="repeat(4, 1fr)"
-            gap={2}
-          >
-            {renderBodyPart("Core", "/images/abs.jpg")}
-            {renderBodyPart("Chest", "/images/chest.jpg")}
-            {renderBodyPart("Back", "/images/back.jpg")}
-            {renderBodyPart("Biceps", "/images/biceps.jpg")}
-            {renderBodyPart("Triceps", "/images/triceps.jpg")}
-            {renderBodyPart("Shoulders", "/images/shoulders.jpg")}
-            {renderBodyPart("Legs", "/images/legs.jpg")}
-            {renderBodyPart("All", "/images/all.jpg")}
-          </Grid>
-        </GridItem>
         <GridItem
           boxShadow="lg"
           rounded="lg"
           borderRadius="5px"
           rowSpan={1}
-          colSpan={{ base: 6, md: 3, lg: 2 }}
+          colSpan={{ base: 6, md: 6, xl: 2 }}
         >
           <Box p={4} width="100%">
             <form onSubmit={onSubmit}>
@@ -345,6 +319,34 @@ const Exercises = () => {
             </form>
           </Box>
         </GridItem>
+        <GridItem rowSpan={1} colSpan={{ base: 6, xl: 4 }}>
+          <Text
+            textAlign="right"
+            fontSize="lg"
+            m={1}
+            _hover={{
+              cursor: "pointer",
+            }}
+          ></Text>
+          <Grid
+            padding={4}
+            h={"27rem"}
+            w="100%"
+            templateRows="repeat(2, 1fr)"
+            templateColumns="repeat(4, 1fr)"
+            gap={2}
+          >
+            {renderBodyPart("Core", "/images/abs.jpg")}
+            {renderBodyPart("Chest", "/images/chest.jpg")}
+            {renderBodyPart("Back", "/images/back.jpg")}
+            {renderBodyPart("Biceps", "/images/biceps.jpg")}
+            {renderBodyPart("Triceps", "/images/triceps.jpg")}
+            {renderBodyPart("Shoulders", "/images/shoulders.jpg")}
+            {renderBodyPart("Legs", "/images/legs.jpg")}
+            {renderBodyPart("All", "/images/all.jpg")}
+          </Grid>
+        </GridItem>
+
         {exercises ? renderExercises(exercises) : <h1>Loading...</h1>}
       </Grid>
     </Layout>
