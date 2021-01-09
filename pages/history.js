@@ -1,41 +1,131 @@
 import Layout from "../components/layout";
 import GraphQLClient from "../utils/graphQLClient";
+import dayjs from "dayjs";
 import { getCompletedWorkoutsByUser } from "../graphql/queries";
-import { useState } from "react";
+import Head from "next/head";
 import auth0 from "../utils/auth0";
+import {
+  Grid,
+  GridItem,
+  Button,
+  Text,
+  Heading,
+  Flex,
+  Spacer,
+  Icon,
+} from "@chakra-ui/react";
+import { BiTimeFive } from "react-icons/bi";
 
 export default function WorkoutHistory({ workouts, user }) {
   console.log(workouts);
   console.log(user);
 
-  return (
-    <Layout user={user}>
-      <main>
-        {workouts.map((workout) => {
+  workouts = workouts.reverse();
+
+  const Timer = ({ timeTaken }) => {
+    let minutes = Math.floor(timeTaken / 60);
+    let seconds = timeTaken - minutes * 60;
+    minutes = minutes < 10 ? "0" + minutes : minutes;
+    seconds = seconds < 10 ? "0" + seconds : seconds;
+
+    return (
+      <Text>
+        {minutes}:{seconds}
+      </Text>
+    );
+  };
+
+  const HistoryCard = ({ key, workout }) => {
+    return (
+      <GridItem
+        key={key}
+        borderRadius="5px"
+        rowSpan={2}
+        colSpan={{ base: 6, md: 3, lg: 2 }}
+        boxShadow="xl"
+        rounded="lg"
+        bg="white"
+        p={8}
+        transition="all 0.15s ease-out"
+        _hover={{ transform: "translateY(-5px)", boxShadow: "2xl" }}
+        overflow="auto"
+        css={{
+          "&::-webkit-scrollbar": {
+            width: "5px",
+          },
+          "&::-webkit-scrollbar-track": {
+            width: "6px",
+          },
+          "&::-webkit-scrollbar-thumb": {
+            background: "#FADA5E",
+            borderRadius: "24px",
+          },
+        }}
+      >
+        <Heading pb={1} borderBottom={"1px solid black"}>
+          {workout.name}
+        </Heading>
+        <Flex mt={2} mb={4} align="center">
+          <Text>{dayjs(workout.date).format("DD MMMM YYYY").toString()}</Text>
+          <Spacer />
+          <Icon as={BiTimeFive} mr={2} />
+
+          <Timer timeTaken={workout.timeTaken} />
+        </Flex>
+
+        {workout.exercises.map((exercise) => {
           return (
-            <div className={"workout"} key={workout._id}>
-              <h2>{workout.name}</h2>
-              {workout.exercises.map((exercise) => {
+            <>
+              <Flex mb={1} mt={3} align="center" key={exercise._id}>
+                <Text fontWeight="medium">{exercise.name}</Text>
+                <Spacer />
+                <Text fontWeight="medium">1 RM</Text>
+              </Flex>
+
+              {exercise.sets.map((set, index) => {
                 return (
-                  <div className="exercise" key={exercise.name}>
-                    <h3>{exercise.name}</h3>
-                    {exercise.sets.map((set, index) => {
-                      return (
-                        <div className="set" key={index}>
-                          <h4>Set {index}</h4>
-                          <h5>
-                            {set.reps} reps x {set.weight} kg{" "}
-                          </h5>
-                        </div>
-                      );
-                    })}
-                  </div>
+                  <Flex align="center" key={index}>
+                    <Text mr={4}>{index + 1}</Text>
+                    <Text>
+                      {set.weight} kg x {set.reps}
+                    </Text>
+                    <Spacer />
+                    <Text>{Math.floor(set.weight * 1.1307 + 0.6998)}</Text>
+                  </Flex>
                 );
               })}
-            </div>
+            </>
           );
         })}
-      </main>
+      </GridItem>
+    );
+  };
+
+  return (
+    <Layout user={user}>
+      <Head>
+        <title>Next Workout | History</title>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+
+      <Heading mt={12}>History</Heading>
+
+      {user && (
+        <>
+          <Grid
+            pb={25}
+            pt={12}
+            h="auto"
+            templateColumns="repeat(6, 1fr)"
+            autoRows="14rem"
+            gap={4}
+          >
+            {workouts.map((workout) => (
+              <HistoryCard key={workout._id} workout={workout} />
+            ))}
+          </Grid>
+        </>
+      )}
     </Layout>
   );
 }

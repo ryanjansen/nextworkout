@@ -48,7 +48,6 @@ export default function Workout({ exercises, user }) {
   const [exerciseSets, setExerciseSets] = useState([]);
   const [workout, setWorkout] = useState([]);
   const [workoutName, setWorkoutName] = useState("New Workout");
-  const [success, setSuccess] = useState(false);
 
   const toast = createStandaloneToast();
 
@@ -144,8 +143,13 @@ export default function Workout({ exercises, user }) {
       const data = await GraphQLClient.request(mutation, variables);
       console.log(data);
       setWorkout([]);
-      setSuccess(true);
-      setTimeout(() => setSuccess(false), 5000);
+      toast({
+        title: "New Workout Saved!",
+        description: "You can find it under the 'workouts' page",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
     } catch (error) {
       console.error(error);
     }
@@ -173,7 +177,6 @@ export default function Workout({ exercises, user }) {
           <Grid
             pt={12}
             pb={8}
-            as="main"
             h="auto"
             templateColumns="repeat(6, 1fr)"
             autoRows="auto"
@@ -357,15 +360,6 @@ export default function Workout({ exercises, user }) {
               )}
             </GridItem>
           </Grid>
-
-          {success &&
-            toast({
-              title: "New Workout Saved!",
-              description: "You can find it under the 'workouts' page",
-              status: "success",
-              duration: 5000,
-              isClosable: true,
-            })}
         </>
       )}
     </Layout>

@@ -96,6 +96,7 @@ const Exercises = () => {
         borderRadius="10px"
         boxShadow="dark-lg"
         rounded="2xl"
+        maxW={"10.5rem"}
         h={"80%"}
         w={"80%"}
         rowSpan={1}
@@ -251,7 +252,7 @@ const Exercises = () => {
         templateColumns="repeat(6, 1fr)"
         gap={4}
       >
-        <GridItem rowSpan={1} colSpan={{ base: 6, md: 3, lg: 4 }}>
+        <GridItem rowSpan={1} colSpan={{ base: 6, xl: 4 }}>
           <Text
             textAlign="right"
             fontSize="lg"
@@ -262,7 +263,7 @@ const Exercises = () => {
           ></Text>
           <Grid
             padding={4}
-            h="full"
+            h={"27rem"}
             w="100%"
             templateRows="repeat(2, 1fr)"
             templateColumns="repeat(4, 1fr)"

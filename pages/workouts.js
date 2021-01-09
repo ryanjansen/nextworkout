@@ -16,12 +16,9 @@ import {
   Th,
   Td,
   Button,
-  Stack,
   Grid,
   GridItem,
   Text,
-  Flex,
-  Center,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -31,55 +28,57 @@ import {
   ModalCloseButton,
   useDisclosure,
   IconButton,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverHeader,
+  PopoverBody,
+  PopoverFooter,
+  PopoverArrow,
+  PopoverCloseButton,
+  createStandaloneToast,
 } from "@chakra-ui/react";
 import { GrAdd } from "react-icons/gr";
 import Link from "next/link";
 import Head from "next/head";
 
-export default function Workouts({ workouts, user }) {
-  console.log(workouts);
-  console.log(user);
-
+export default function Workouts({ loadedWorkouts, user }) {
+  const [workouts, setWorkouts] = useState(loadedWorkouts);
   const [runningWorkout, setRunningWorkout] = useState();
 
-  const WorkoutCard = ({ workout, key }) => {
+  const toast = createStandaloneToast();
+
+  const WorkoutCard = ({ workout }) => {
     const { isOpen, onOpen, onClose } = useDisclosure();
+    const onModalClose = onClose;
     return (
       <>
         <GridItem
           onClick={onOpen}
-          key={key}
+          key={workout._id}
           borderRadius="5px"
           colSpan={{ base: 6, md: 3, lg: 2 }}
           boxShadow="lg"
           rounded="lg"
           bg="white"
-          p={2}
-          textAlign="center"
+          p={6}
           cursor="pointer"
           transition="all 0.15s ease-out"
-          _hover={{ transform: "translateY(-5px)" }}
+          _hover={{ transform: "translateY(-5px)", boxShadow: "2xl" }}
         >
-          <Text
-            m={2}
-            borderRadius={3}
-            bg="yellow.300"
-            fontSize="xl"
-            fontWeight="bold"
-          >
+          <Text as="u" fontSize="2xl" fontWeight="bold">
             {workout.name}
           </Text>
-          <Center h={"10rem"}>
-            <Text noOfLines={6}>
-              {workout.exercises.map((exercise) => {
-                return (
-                  <Text key={exercise.name}>
-                    {exercise.name} : {exercise.sets.length} sets
-                  </Text>
-                );
-              })}
-            </Text>
-          </Center>
+
+          <Text mt={2} noOfLines={6}>
+            {workout.exercises.map((exercise) => {
+              return (
+                <Text fontSize="md" key={exercise.name}>
+                  {exercise.sets.length} x {exercise.name}
+                </Text>
+              );
+            })}
+          </Text>
         </GridItem>
 
         <Modal onClose={onClose} size="xl" isOpen={isOpen}>
@@ -100,9 +99,36 @@ export default function Workouts({ workouts, user }) {
               >
                 Start
               </Button>
-              <Button colorScheme="red" onClick={handleStartWorkout}>
-                Delete
-              </Button>
+
+              <Popover placement="right">
+                {({ onClose }) => (
+                  <>
+                    <PopoverTrigger>
+                      <Button colorScheme="red">Delete</Button>
+                    </PopoverTrigger>
+
+                    <PopoverContent>
+                      <PopoverArrow />
+                      <PopoverHeader>Confirmation</PopoverHeader>
+                      <PopoverCloseButton />
+                      <PopoverBody>
+                        <Box>Are you sure you want to delete this workout?</Box>
+                        <Button
+                          mt={4}
+                          colorScheme="red"
+                          onClick={() => {
+                            onClose();
+                            onModalClose();
+                            handleDeleteWorkout(workout._id);
+                          }}
+                        >
+                          Confirm
+                        </Button>
+                      </PopoverBody>
+                    </PopoverContent>
+                  </>
+                )}
+              </Popover>
             </ModalFooter>
           </ModalContent>
         </Modal>
@@ -138,6 +164,14 @@ export default function Workouts({ workouts, user }) {
     try {
       const data = await GraphQLClient.request(mutation, variables);
       console.log(data);
+      setWorkouts(workouts.filter((w) => w._id !== workoutID));
+      toast({
+        title: "Workout Deleted",
+        description: "Your workout had been deleted successfully",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
     } catch (error) {
       console.error(error);
     }
@@ -185,7 +219,6 @@ export default function Workouts({ workouts, user }) {
           <Grid
             pb={25}
             pt={12}
-            as="main"
             h="auto"
             templateColumns={{ base: "repeat(6, 1fr)", xl: "repeat(8, 1fr)" }}
             autoRows="14rem"
@@ -224,13 +257,13 @@ export default function Workouts({ workouts, user }) {
               </Link>
             </GridItem>
             {workouts.map((workout) => (
-              <WorkoutCard key={workout._id} workout={workout} />
+              <WorkoutCard workout={workout} />
             ))}
           </Grid>
         </>
       )}
 
-      {runningWorkout && (
+      {user && runningWorkout && (
         <WorkoutRunner
           workout={runningWorkout}
           handleFinishWorkout={handleFinishWorkout}
@@ -245,9 +278,9 @@ export async function getServerSideProps({ req, res }) {
     const session = await auth0.getSession(req);
     const { query, variables } = getWorkoutsByUser(session.user.userID);
     const res = await GraphQLClient.request(query, variables);
-    const workouts = res.findUserByID.workouts.data;
+    const loadedWorkouts = res.findUserByID.workouts.data;
     return {
-      props: { workouts, user: session.user },
+      props: { loadedWorkouts, user: session.user },
     };
   } catch (error) {
     console.error(error);

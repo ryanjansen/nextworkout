@@ -12,6 +12,7 @@ import {
 } from "@chakra-ui/react";
 
 export default function WorkoutRunner({ workout, handleFinishWorkout }) {
+  console.log("running");
   const [timeTaken, setTimeTaken] = useState(0);
   const now = dayjs();
 

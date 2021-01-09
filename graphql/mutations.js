@@ -83,8 +83,8 @@ const createWorkout = (name, userID, eList) => {
 
   const exerciseList = eList.map((exercise) => {
     const result = {
-      exerciseData: exercise.exercise._id,
-      name: exercise.exercise.name,
+      exerciseData: exercise.exerciseID,
+      name: exercise.name,
       sets: exercise.sets,
     };
     return result;
