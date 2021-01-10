@@ -56,7 +56,7 @@ export default function Layout({ user, children }) {
           h={{ base: 20, md: "100vh" }}
           w={{ base: "full", md: "2xs" }}
           textAlign="center"
-          bg="#white"
+          bg="white"
           borderTop={{ base: "1px", md: "none" }}
           borderColor="gray.100"
           boxShadow={{ base: "dark-lg", md: "xs" }}
