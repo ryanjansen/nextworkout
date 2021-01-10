@@ -1,12 +1,14 @@
 import Head from "next/head";
-import Link from "next/link";
-import styles from "../styles/Home.module.css";
+import dayjs from "dayjs";
+import WorkoutRunner from "../components/workoutRunner";
 import auth0 from "../utils/auth0";
 import Layout from "../components/layout";
+import { useState } from "react";
 import {
   getCompletedWorkoutsByUser,
   getWorkoutsByUser,
 } from "../graphql/queries";
+import { createCompletedWorkout } from "../graphql/mutations";
 import GraphQLClient from "../utils/graphQLClient";
 import _ from "lodash";
 import { useRouter } from "next/router";
@@ -14,25 +16,60 @@ import {
   Text,
   Grid,
   GridItem,
-  Container,
   Heading,
   Button,
   Box,
   Flex,
   VStack,
   Center,
-  HStack,
 } from "@chakra-ui/react";
 
 export default function Home({ user, completedWorkouts, loadedWorkouts }) {
+  const [runningWorkout, setRunningWorkout] = useState();
+  const [date, setDate] = useState();
   const router = useRouter();
+
+  const handleQuickStart = (workout) => {
+    setRunningWorkout(workout);
+    setDate(dayjs().format("YYYY-MM-DD").toString());
+  };
+
+  const handleFinishWorkout = async (timeTaken, exercises) => {
+    const { mutation, variables } = createCompletedWorkout(
+      runningWorkout.name,
+      user.userID,
+      runningWorkout._id,
+      date,
+      timeTaken,
+      exercises
+    );
+    try {
+      const data = await GraphQLClient.request(mutation, variables);
+      console.log(data);
+      setRunningWorkout();
+      setDate();
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const renderAllWorkouts = (workouts) => {
     return workouts.map((workout) => {
       return (
         <Box m={1} bg="#e3e3e3" borderRadius="5px">
-          <Flex direction="row" justifyContent="space-evenly">
-            <Text fontWeight={600}>{workout.name}</Text>
+          <Flex direction="row" justifyContent="space-between">
+            <Center h="100%">
+              <Text m={1} fontWeight={600}>
+                {workout.name}
+              </Text>
+            </Center>
+            <Button
+              m={1}
+              colorScheme="green"
+              onClick={() => handleQuickStart(workout)}
+            >
+              Start
+            </Button>
           </Flex>
         </Box>
       );
@@ -96,7 +133,7 @@ export default function Home({ user, completedWorkouts, loadedWorkouts }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      {user && (
+      {user && !runningWorkout && (
         <Grid
           padding={4}
           h={{ base: "auto", md: "auto" }}
@@ -152,22 +189,27 @@ export default function Home({ user, completedWorkouts, loadedWorkouts }) {
             borderRadius="5px"
             rowSpan={1}
             colSpan={{ base: 6, md: 6, xl: 6 }}
-            onClick={() => router.push("/workouts")}
             cursor="pointer"
             transition="all 0.15s ease-out"
             _hover={{ transform: "translateY(-5px)", boxShadow: "2xl" }}
           >
             <Heading m={1} size="lg">
-              All Workouts
+              Quick Start Workout
             </Heading>
             <Text m={1} color="grey">
-              All workouts that you have created
+              Choose a workout to start now
             </Text>
             <Flex direction="column" justifyContent="space-evenly">
               {renderAllWorkouts(loadedWorkouts)}
             </Flex>
           </GridItem>
         </Grid>
+      )}
+      {user && runningWorkout && (
+        <WorkoutRunner
+          workout={runningWorkout}
+          handleFinishWorkout={handleFinishWorkout}
+        />
       )}
     </Layout>
   );
