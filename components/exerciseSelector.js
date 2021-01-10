@@ -363,19 +363,6 @@ const ExerciseSelector = ({ toggle, setSelectedExercise }) => {
       <Heading pt={12} ml={4}>
         Select an Exercise
       </Heading>
-
-      <Grid
-        padding={4}
-        pb={{ base: 24, md: 0 }}
-        h="auto"
-        autoRows="auto"
-        templateColumns="repeat(6, 1fr)"
-        gap={4}
-      >
-        {exercises ? renderExercises(exercises) : <Heading>Loading...</Heading>}
-
-        <AddExerciseForm />
-      </Grid>
       <Grid
         p={2}
         h="auto"
@@ -395,6 +382,18 @@ const ExerciseSelector = ({ toggle, setSelectedExercise }) => {
         {renderBodyPart("Biceps", "/images/biceps.jpg")}
         {renderBodyPart("Shoulders", "/images/shoulders.jpg")}
         {renderBodyPart("Core", "/images/abs.jpg")}
+      </Grid>
+      <Grid
+        padding={4}
+        pb={{ base: 24, md: 0 }}
+        h="auto"
+        autoRows="auto"
+        templateColumns="repeat(6, 1fr)"
+        gap={4}
+      >
+        {exercises ? renderExercises(exercises) : <Heading>Loading...</Heading>}
+
+        <AddExerciseForm />
       </Grid>
     </Box>
   );
