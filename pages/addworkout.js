@@ -40,6 +40,7 @@ import {
   createStandaloneToast,
   Slide,
   useDisclosure,
+  VStack,
 } from "@chakra-ui/react";
 import Head from "next/head";
 import { GrEdit } from "react-icons/gr";
@@ -60,8 +61,11 @@ export default function Workout({ exercises, user }) {
     return (
       <Box p={3} key={exercise.name}>
         <HStack>
-          <Heading p={4}>{exercise.name}</Heading>
+          <Heading size="md" p={4}>
+            {exercise.name}
+          </Heading>
           <Button
+            size="sm"
             onClick={() =>
               handleEditExercise(
                 exercise.name,
@@ -74,6 +78,7 @@ export default function Workout({ exercises, user }) {
           </Button>
 
           <Button
+            size="sm"
             colorScheme="red"
             onClick={() => handleDeleteExercise(exercise.exerciseID)}
           >
@@ -199,8 +204,8 @@ export default function Workout({ exercises, user }) {
 
         {user && (
           <>
+            <Heading pt={{ base: 4, md: 12 }}>Add a Workout</Heading>
             <Grid
-              pt={12}
               pb={8}
               h="auto"
               templateColumns="repeat(6, 1fr)"
@@ -216,13 +221,18 @@ export default function Workout({ exercises, user }) {
                   boxShadow="xl"
                   rounded="xl"
                   bg="white"
+                  p={4}
                 >
-                  <HStack>
-                    <Heading p={4}>{selectedExercise.name}</Heading>
-                    <Button onClick={handleAddSet}>Add Set</Button>
-
-                    <Button onClick={handleRemoveSet}>Remove Set</Button>
-                  </HStack>
+                  <Heading size="lg">Edit Exercise</Heading>
+                  <Heading size="md" pb={4} mt={4}>
+                    {selectedExercise.name}
+                  </Heading>
+                  <Button size="sm" onClick={handleAddSet} mr={4} mb={4}>
+                    Add Set
+                  </Button>
+                  <Button size="sm" onClick={handleRemoveSet} mb={4}>
+                    Remove Set
+                  </Button>
 
                   <Table variant="simple">
                     <Thead>
@@ -312,55 +322,6 @@ export default function Workout({ exercises, user }) {
                 </GridItem>
               )}
 
-              {/* Exercise Selector
-            {!selectedExercise && (
-              <GridItem
-                p={4}
-                borderRadius="5px"
-                rowSpan={1}
-                h={"11rem"}
-                colSpan={{ base: 6, md: 2 }}
-                boxShadow="lg"
-                rounded="lg"
-                bg="white"
-              >
-                <Heading fontSize={{ base: "md", lg: "lg" }} p={2}>
-                  Select an Exercise
-                </Heading>
-                <Select
-                  placeholder="Select Exercise"
-                  value={exerciseDropdownValue}
-                  onChange={(e) => {
-                    setExerciseDropdownValue(e.target.value);
-                  }}
-                >
-                  {exercises.map((exercise) => {
-                    return (
-                      <option key={exercise.name} value={exercise.name}>
-                        {exercise.name}
-                      </option>
-                    );
-                  })}
-                </Select>
-                <Button
-                  onClick={() => {
-                    if (exerciseDropdownValue) {
-                      const exerciseData = exercises.find((exercise) => {
-                        return exercise.name === exerciseDropdownValue;
-                      });
-                      setExerciseSets([{ reps: 0, weight: 0 }]);
-                      setSelectedExercise(exerciseData);
-                    }
-                  }}
-                  w={"full"}
-                  colorScheme="green"
-                  mt={4}
-                >
-                  Select
-                </Button>
-              </GridItem>
-            )} */}
-
               {/* Workout Display */}
               <GridItem
                 borderRadius="5px"
@@ -375,10 +336,9 @@ export default function Workout({ exercises, user }) {
                   <Input
                     p={4}
                     value={workoutName}
-                    onChange={(e) => setWorkoutName(e.value)}
+                    onChange={(e) => setWorkoutName(e.target.value)}
                     fontSize="3xl"
                     startWithEditView
-                    w={"auto"}
                     m={4}
                   />
 

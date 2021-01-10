@@ -46,8 +46,6 @@ export default function WorkoutHistory({ workouts, user }) {
         rounded="lg"
         bg="white"
         p={8}
-        transition="all 0.15s ease-out"
-        _hover={{ transform: "translateY(-5px)", boxShadow: "2xl" }}
         overflow="auto"
         css={{
           "&::-webkit-scrollbar": {
@@ -57,7 +55,7 @@ export default function WorkoutHistory({ workouts, user }) {
             width: "6px",
           },
           "&::-webkit-scrollbar-thumb": {
-            background: "#FADA5E",
+            background: "#FFDD00",
             borderRadius: "24px",
           },
         }}
