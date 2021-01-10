@@ -170,31 +170,43 @@ export default function Home({ user, completedWorkouts, loadedWorkouts }) {
           </GridItem>
         </Grid>
       )}
-
       {!user && (
-        <Box bg="rgba(0,0,0,0.5)" w="full" h="91.4vh" zIndex={2}>
-          <Flex h="91.4vh" align="center">
-            <Container maxW="4xl" centerContent>
-              <Heading
-                mt={4}
-                color="white"
-                fontSize={{ base: "3xl", md: "4xl", lg: "6xl" }}
-              >
-                Track your workouts with ease
-              </Heading>
-              <Text mt={4} fontSize="2xl" color="white">
-                The World's Simplest Workout Tracker
-              </Text>
-              <Link href="/api/login">
-                <a>
-                  <Button colorScheme="yellow" size="lg" mt={8}>
-                    Start Now
-                  </Button>
-                </a>
-              </Link>
-            </Container>
-          </Flex>
-        </Box>
+        <>
+          <Box
+            bgImage="url(/homebg.jpg)"
+            bgPosition="center"
+            bgRepeat="no-repeat"
+            bgSize="cover"
+            w="full"
+            h="100vh"
+            align="center"
+            justify="center"
+          >
+            <Box bg="rgba(0,0,0,0.8)" w="full" h="100vh" zIndex={2}>
+              <Flex h="100vh" align="center">
+                <Container maxW="6xl" centerContent>
+                  <Heading
+                    mt={4}
+                    color="white"
+                    fontSize={{ base: "3xl", md: "4xl", lg: "6xl" }}
+                  >
+                    Track your workouts with ease
+                  </Heading>
+                  <Text mt={4} fontSize="2xl" color="white">
+                    The World's Simplest Workout Tracker
+                  </Text>
+                  <Link href="/api/login">
+                    <a>
+                      <Button colorScheme="yellow" size="lg" mt={8}>
+                        Start Now
+                      </Button>
+                    </a>
+                  </Link>
+                </Container>
+              </Flex>
+            </Box>
+          </Box>
+        </>
       )}
     </Layout>
   );

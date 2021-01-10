@@ -91,7 +91,7 @@ export default function Layout({ user, children }) {
   } else {
     return (
       <>
-        <Flex pl={8} pr={8} bgColor="yellow.400" align="center">
+        <Flex p={6} pos="fixed" w="full" align="center">
           <Box>
             <Image src="/logo.png" alt="logo" width="200px" height="70px" />
           </Box>
