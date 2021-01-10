@@ -1,6 +1,9 @@
 import Head from "next/head";
 import dayjs from "dayjs";
 import WorkoutRunner from "../components/workoutRunner";
+import Link from "next/link";
+import styles from "../styles/Home.module.css";
+import Image from "next/image";
 import auth0 from "../utils/auth0";
 import Layout from "../components/layout";
 import { useState } from "react";
@@ -210,6 +213,44 @@ export default function Home({ user, completedWorkouts, loadedWorkouts }) {
           workout={runningWorkout}
           handleFinishWorkout={handleFinishWorkout}
         />
+      )}
+      {!user && (
+        <>
+          <Box
+            bgImage="url(/homebg.jpg)"
+            bgPosition="center"
+            bgRepeat="no-repeat"
+            bgSize="cover"
+            w="full"
+            h="100vh"
+            align="center"
+            justify="center"
+          >
+            <Box bg="rgba(0,0,0,0.8)" w="full" h="100vh" zIndex={2}>
+              <Flex h="100vh" align="center">
+                <Container maxW="6xl" centerContent>
+                  <Heading
+                    mt={4}
+                    color="white"
+                    fontSize={{ base: "3xl", md: "4xl", lg: "6xl" }}
+                  >
+                    Track your workouts with ease
+                  </Heading>
+                  <Text mt={4} fontSize="2xl" color="white">
+                    The World's Simplest Workout Tracker
+                  </Text>
+                  <Link href="/api/login">
+                    <a>
+                      <Button colorScheme="yellow" size="lg" mt={8}>
+                        Start Now
+                      </Button>
+                    </a>
+                  </Link>
+                </Container>
+              </Flex>
+            </Box>
+          </Box>
+        </>
       )}
     </Layout>
   );

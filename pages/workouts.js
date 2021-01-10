@@ -54,35 +54,47 @@ export default function Workouts({ loadedWorkouts, user }) {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const onModalClose = onClose;
     return (
-      <>
-        <GridItem
-          onClick={onOpen}
-          key={workout._id}
-          borderRadius="5px"
-          colSpan={{ base: 6, md: 3, lg: 2 }}
-          boxShadow="lg"
-          rounded="lg"
-          bg="white"
-          p={6}
-          cursor="pointer"
-          transition="all 0.15s ease-out"
-          _hover={{ transform: "translateY(-5px)", boxShadow: "2xl" }}
+      <GridItem
+        onClick={onOpen}
+        key={workout._id}
+        borderRadius="20px"
+        colSpan={{ base: 6, md: 3, lg: 2 }}
+        boxShadow="xl"
+        rounded="xl"
+        bg="white"
+        cursor="pointer"
+        transition="all 0.15s ease-out"
+        _hover={{ transform: "translateY(-5px)", boxShadow: "2xl" }}
+        pos="relative"
+      >
+        <Text pl={3} pt={2} fontSize="2xl" fontWeight="bold">
+          {workout.name}
+        </Text>
+
+        <Text mt={2} noOfLines={5}>
+          {workout.exercises.map((exercise) => {
+            return (
+              <Text pl={5} fontSize="lg" key={exercise.name}>
+                {exercise.sets.length} x {exercise.name}
+              </Text>
+            );
+          })}
+        </Text>
+
+        <Box
+          pos="absolute"
+          bottom="0"
+          bg="#FFDD00"
+          w="full"
+          borderBottomRightRadius="10px"
+          borderBottomLeftRadius="10px"
+          textAlign="center"
+          p={2}
         >
-          <Text as="u" fontSize="2xl" fontWeight="bold">
-            {workout.name}
+          <Text fontSize="lg" color="Black">
+            View Workout
           </Text>
-
-          <Text mt={2} noOfLines={6}>
-            {workout.exercises.map((exercise) => {
-              return (
-                <Text fontSize="md" key={exercise.name}>
-                  {exercise.sets.length} x {exercise.name}
-                </Text>
-              );
-            })}
-          </Text>
-        </GridItem>
-
+        </Box>
         <Modal
           onClose={onClose}
           size="xl"
@@ -91,7 +103,7 @@ export default function Workouts({ loadedWorkouts, user }) {
         >
           <ModalOverlay />
           <ModalContent>
-            <ModalHeader>{workout.name}</ModalHeader>
+            <ModalHeader fontSize="5xl">{workout.name}</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
               {workout.exercises.map((exercise) =>
@@ -139,7 +151,7 @@ export default function Workouts({ loadedWorkouts, user }) {
             </ModalFooter>
           </ModalContent>
         </Modal>
-      </>
+      </GridItem>
     );
   };
 
@@ -189,10 +201,10 @@ export default function Workouts({ loadedWorkouts, user }) {
   const generateExerciseTable = (exercise) => {
     return (
       <Box p={3} key={exercise.name}>
-        <Heading size="m" mb={4}>
+        <Heading size="xl" mb={4}>
           {exercise.name}
         </Heading>
-        <Table variant="striped" colorScheme="yellow">
+        <Table variant="simple">
           <Thead>
             <Tr>
               <Th>Set</Th>
@@ -236,37 +248,24 @@ export default function Workouts({ loadedWorkouts, user }) {
             autoRows="14rem"
             gap={4}
           >
-            <GridItem
-              borderRadius="5px"
-              rowSpan={1}
-              colSpan={{ base: 6, md: 3, lg: 2 }}
-              bg="white"
-              align="center"
-            >
-              <Heading textAlign="center" mt={12}>
-                Add Workout
-              </Heading>
-              <Link href="/addworkout">
-                <a>
-                  <IconButton
-                    mt={4}
-                    colorScheme="green"
-                    aria-label="Add Workout"
-                    size="lg"
-                    icon={<GrAdd />}
-                  />
-                </a>
-              </Link>
-            </GridItem>
             {workouts.map((workout) => (
               <WorkoutCard workout={workout} />
             ))}
           </Grid>
+
+          <Link href="/addworkout">
+            <a>
+              <Button mt={4} colorScheme="green" size="lg" isFullWidth>
+                Add Workout
+              </Button>
+            </a>
+          </Link>
         </>
       )}
 
       {user && runningWorkout && (
         <WorkoutRunner
+          now={dayjs()}
           workout={runningWorkout}
           handleFinishWorkout={handleFinishWorkout}
         />

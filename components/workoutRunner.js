@@ -13,11 +13,9 @@ import {
   createStandaloneToast,
 } from "@chakra-ui/react";
 
-export default function WorkoutRunner({ workout, handleFinishWorkout }) {
+export default function WorkoutRunner({ now, workout, handleFinishWorkout }) {
   const [timeTaken, setTimeTaken] = useState(0);
   const toast = createStandaloneToast();
-
-  const now = dayjs();
 
   const { register, handleSubmit, errors } = useForm();
 
@@ -62,40 +60,52 @@ export default function WorkoutRunner({ workout, handleFinishWorkout }) {
         });
       }
     }
-    console.log(newExercises);
-    toast({
-      title: "Workout Completed!",
-      description: "You can find it under the 'history' page",
-      status: "success",
-      duration: 5000,
-      isClosable: true,
-    });
-    handleFinishWorkout(timeTaken, newExercises);
+    if (newExercises.length === 0) {
+      toast({
+        position: "top",
+        title: "Complete Some Sets",
+        description: "Don't be lazy!",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    } else {
+      toast({
+        position: "top",
+        title: "Workout Completed!",
+        description: "You can find it under'history'",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+      handleFinishWorkout(timeTaken, newExercises);
+    }
   };
 
   return (
-    <Container size="2xl" p={8} centerContent>
-      <Heading as="u" size="2xl">
-        {workout.name}
-      </Heading>
-      <Heading mt={4} size="xl">
-        {now.format("DD MMMM YYYY (HH:mm)").toString()}
-      </Heading>
-      <Timer />
-      <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <Container size="2xl" p={4} centerContent>
+        <Heading as="u" size="2xl" textAlign="center">
+          {workout.name}
+        </Heading>
+        <Heading mt={4} size="xl" textAlign="center">
+          {now.format("DD MMMM YYYY (HH:mm)").toString()}
+        </Heading>
+        <Timer />
         {workout.exercises.map((exercise) => {
           return (
-            <Box key={exercise.name}>
+            <Box key={exercise.name} mb={4}>
               <Heading textAlign="center" pb={4} pt={4}>
                 {exercise.name}
               </Heading>
               {exercise.sets.map((set, index) => {
                 return (
                   <HStack
-                    spacing={5}
+                    spacing={2}
                     w="100vw"
                     textAlign="center"
                     justify="center"
+                    mb={4}
                   >
                     <Text
                       pr={{ base: 1, md: 4 }}
@@ -104,12 +114,13 @@ export default function WorkoutRunner({ workout, handleFinishWorkout }) {
                       Set {index + 1}
                     </Text>
                     <Text
-                      pr={{ base: 1, md: 4 }}
+                      pr={{ base: 0, md: 4 }}
                       fontSize={{ base: "2xl", md: "4xl" }}
                     >
                       <Input
                         fontSize={{ base: "2xl", md: "4xl" }}
                         w={{ base: "3rem", md: "5rem" }}
+                        p={1}
                         defaultValue={set.reps}
                         name={`${exercise.exerciseData}.sets[${index}].reps`}
                         ref={register}
@@ -117,7 +128,8 @@ export default function WorkoutRunner({ workout, handleFinishWorkout }) {
                       reps x{" "}
                       <Input
                         fontSize={{ base: "2xl", md: "4xl" }}
-                        w={{ base: "4rem", md: "7rem" }}
+                        w={{ base: "5rem", md: "7rem" }}
+                        p={1}
                         defaultValue={set.weight}
                         name={`${exercise.exerciseData}.sets[${index}].weight`}
                         ref={register}
@@ -138,17 +150,16 @@ export default function WorkoutRunner({ workout, handleFinishWorkout }) {
         })}
 
         <Button
-          isFullWidth
+          w="80%"
+          textAlign="center"
           type="submit"
           colorScheme="green"
           size="lg"
           fontSize="3xl"
-
-          // onClick={() => handleFinishWorkout(now.format("YYYY-MM-DD"), timeTaken)}
         >
           Finish Workout
         </Button>
-      </form>
-    </Container>
+      </Container>
+    </form>
   );
 }

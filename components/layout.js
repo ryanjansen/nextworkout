@@ -11,9 +11,10 @@ import {
 } from "@chakra-ui/react";
 import Link from "next/link";
 import { IoBarbell } from "react-icons/io5";
-import { GrPlan, GrHistory, GrLogout, GrLogin } from "react-icons/gr";
+import { GrPlan, GrHistory, GrLogout, GrHome } from "react-icons/gr";
+import Image from "next/image";
 
-const MenuItem = ({ children, href, selected, icon }) => {
+const MenuItem = ({ children, href, icon, ...rest }) => {
   return (
     <Link href={href}>
       <a>
@@ -23,14 +24,14 @@ const MenuItem = ({ children, href, selected, icon }) => {
           align="center"
           direction={{ base: "column", md: "row" }}
           spacing={{ base: 2, md: 4 }}
-          mb={{ base: 0, md: 10 }}
+          {...rest}
         >
           <Icon as={icon} />
           <Text
-            fontSize={{ base: "md", md: "lg" }}
+            fontSize={{ base: "md", md: "2xl" }}
             fontWeight="medium"
             w="full"
-            _hover={{ color: "yellow.300" }}
+            _hover={{ color: "#FFDD00" }}
           >
             {children}
           </Text>
@@ -56,42 +57,30 @@ export default function Layout({ user, children }) {
           w={{ base: "full", md: "2xs" }}
           textAlign="center"
           bg="white"
-          borderTop={{ base: "1px solid gray", md: null }}
-          zIndex={2}
+          borderTop={{ base: "1px", md: null }}
+          borderColor="gray.200"
+          boxShadow={{ base: "dark-lg", md: "none" }}
+          zIndex={60}
         >
-          <Text
-            display={{ base: "none", md: "block" }}
-            fontSize="3xl"
-            fontWeight="bold"
-            mb={8}
-            mt={8}
-            color="yellow.300"
-          >
-            <Link href="/">
-              <a>Pumpshock</a>
-            </Link>
-          </Text>
-
-          <>
-            <Box mb={8} display={{ base: "none", md: "block" }}>
-              <Text fontSize="xl" fontWeight="bold">
-                Welcome, {user.nickname}
-              </Text>
-            </Box>
-            <MenuItem href="/workouts" icon={GrPlan}>
-              Workouts
-            </MenuItem>
-            <MenuItem href="/exercises" icon={IoBarbell}>
-              Exercises
-            </MenuItem>
-            <MenuItem href="/history" icon={GrHistory}>
-              History
-            </MenuItem>
-            <Divider mb={12} display={{ base: "none", md: "block" }} />
-            <MenuItem href="/api/logout" icon={GrLogout}>
-              Logout
-            </MenuItem>
-          </>
+          <Box display={{ base: "none", md: "block" }}>
+            <Image src="/logo.png" alt="logo" width="200px" height="65px" />
+          </Box>
+          <MenuItem href="/" icon={GrHome} mt={{ base: 0, md: 12 }}>
+            Overview
+          </MenuItem>
+          <MenuItem href="/workouts" icon={GrPlan}>
+            Workouts
+          </MenuItem>
+          {/* <MenuItem href="/exercises" icon={IoBarbell}>
+            Exercises
+          </MenuItem> */}
+          <MenuItem href="/history" icon={GrHistory}>
+            History
+          </MenuItem>
+          <Divider mb={12} display={{ base: "none", md: "block" }} />
+          <MenuItem href="/api/logout" icon={GrLogout}>
+            Logout
+          </MenuItem>
         </Flex>
 
         <Box p={4} mb={{ base: 12, md: 0 }} ml={{ base: 0, md: 64 }} as="main">
@@ -102,9 +91,9 @@ export default function Layout({ user, children }) {
   } else {
     return (
       <>
-        <Flex pt={10} pl={8} pr={8} bg="black">
+        <Flex p={6} pos="fixed" w="full" align="center">
           <Box>
-            <Heading color="yellow.400">Pumpshock</Heading>
+            <Image src="/logo.png" alt="logo" width="200px" height="70px" />
           </Box>
           <Spacer />
           <Link href="/api/login">
