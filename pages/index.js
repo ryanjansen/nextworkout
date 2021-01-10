@@ -1,6 +1,7 @@
 import Head from "next/head";
 import Link from "next/link";
 import styles from "../styles/Home.module.css";
+import Image from "next/image";
 import auth0 from "../utils/auth0";
 import Layout from "../components/layout";
 import {
@@ -112,12 +113,6 @@ export default function Home({ user }) {
             <Box bg="rgba(0,0,0,0.5)" w="full" h="91.4vh" zIndex={2}>
               <Flex h="91.4vh" align="center">
                 <Container maxW="4xl" centerContent>
-                  <Heading
-                    color="yellow.400"
-                    fontSize={{ base: "4xl", md: "5xl", lg: "8xl" }}
-                  >
-                    PUMPSHOCK
-                  </Heading>
                   <Heading
                     mt={4}
                     color="white"

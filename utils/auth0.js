@@ -6,7 +6,7 @@ export default initAuth0({
   clientSecret: process.env.CLIENT_SECRET,
   scope: "openid profile",
   redirectUri: "https://www.pumpshock.com/api/callback",
-  postLogoutRedirectUri: "https://www.pumpshock.com",
+  postLogoutRedirectUri: "https://www.pumpshock.com/",
   session: {
     // The secret used to encrypt the cookie.
     cookieSecret: process.env.COOKIE_SECRET,

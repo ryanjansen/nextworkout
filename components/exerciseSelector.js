@@ -16,14 +16,17 @@ import {
   Center,
   VStack,
   Button,
-  HStack,
   Input,
   Select,
   createStandaloneToast,
   Heading,
   Skeleton,
-  Collapse,
-  useDisclosure,
+  Spacer,
+  Flex,
+  FormControl,
+  FormLabel,
+  FormErrorMessage,
+  FormHelperText,
 } from "@chakra-ui/react";
 import _ from "lodash";
 
@@ -74,10 +77,11 @@ const ExerciseSelector = ({ toggle, setSelectedExercise }) => {
         newExercise.createExerciseData,
       ]);
       toast({
+        position: "top",
         title: "Exercise Created.",
         description: `${exercise.name} has been added to your list of exercises!`,
         status: "success",
-        duration: 9000,
+        duration: 2000,
         isClosable: true,
       });
     } catch (error) {
@@ -97,10 +101,11 @@ const ExerciseSelector = ({ toggle, setSelectedExercise }) => {
         );
       });
       toast({
+        position: "top",
         title: "Exercise Deleted",
         description: `${exerciseName} has been deleted`,
         status: "error",
-        duration: 9000,
+        duration: 2000,
         isClosable: true,
       });
     } catch (error) {
@@ -115,27 +120,16 @@ const ExerciseSelector = ({ toggle, setSelectedExercise }) => {
         borderRadius="10px"
         boxShadow="dark-lg"
         rounded="2xl"
-        maxW={"10.5rem"}
-        h={"80%"}
-        w={"80%"}
+        h={"7rem"}
+        w={"90%"}
         rowSpan={1}
-        colSpan={1}
+        colSpan={{ base: 2, sm: 1, xl: 1 }}
         _hover={{
           cursor: "pointer",
         }}
         onClick={() => setSelectedBodyPart(bodypart)}
       >
         <Center h={"100%"}>
-          <Text
-            position="absolute"
-            zIndex={20}
-            color="white"
-            textAlign="center"
-            fontSize="2xl"
-            fontWeight="medium"
-          >
-            {bodypart}
-          </Text>
           <Box
             borderRadius="10px"
             position="absolute"
@@ -148,7 +142,16 @@ const ExerciseSelector = ({ toggle, setSelectedExercise }) => {
               opacity: "0",
             }}
           />
-
+          <Text
+            position="absolute"
+            zIndex={20}
+            color="white"
+            textAlign="center"
+            fontSize="xl"
+            fontWeight="medium"
+          >
+            {bodypart}
+          </Text>
           <Image
             borderRadius="10px"
             position="absolute"
@@ -189,8 +192,8 @@ const ExerciseSelector = ({ toggle, setSelectedExercise }) => {
               fontSize={{ base: "md", md: "md", lg: "lg" }}
               m={1}
             >
-              You have no exercises for this body part. Fill out the form above
-              to add exercises!
+              You have no exercises for this body part. Fill out the form to add
+              exercises!
             </Text>
           </Center>
         </GridItem>
@@ -200,10 +203,9 @@ const ExerciseSelector = ({ toggle, setSelectedExercise }) => {
     const renderedExerciseList = exerciseList.map((exercise) => {
       return (
         <GridItem
-          boxShadow="lg"
+          boxShadow="xl"
           rounded="lg"
-          borderRadius="5px"
-          h={"14rem"}
+          borderRadius="20px"
           cursor="pointer"
           transition="all 0.1s ease-out"
           rowSpan={1}
@@ -214,13 +216,9 @@ const ExerciseSelector = ({ toggle, setSelectedExercise }) => {
             toggle();
           }}
         >
-          <Center h={"100%"}>
-            <VStack>
-              <Text
-                textAlign="center"
-                fontSize={{ base: "lg", md: "lg", lg: "xl" }}
-                m={1}
-              >
+          <Flex>
+            <Box pl={2} pt={2} pb={2}>
+              <Text fontSize={{ base: "xl", md: "xl", lg: "2xl" }} m={1}>
                 {exercise.name}
               </Text>
               <Text
@@ -237,21 +235,34 @@ const ExerciseSelector = ({ toggle, setSelectedExercise }) => {
               >
                 {exercise.bodypart}
               </Text>
+            </Box>
+            <Spacer />
+            <Center
+              _hover={{ bg: "yellow.500" }}
+              transition="all 0.2s ease-out"
+              bg="#FFDD00"
+              p={2}
+              borderTopRightRadius="10px"
+              borderBottomRightRadius="10px"
+              pos="relative"
+            >
+              <Text fontSize="sm">Select</Text>
               {exercise.user && (
-                <HStack>
-                  <Button colorScheme="teal">Edit</Button>
-                  <Button
-                    colorScheme="red"
-                    onClick={() =>
-                      handleDeleteExercise(exercise._id, exercise.name)
-                    }
-                  >
-                    Delete
-                  </Button>
-                </HStack>
+                <Button
+                  pos="absolute"
+                  size="xs"
+                  bottom="0"
+                  colorScheme="red"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDeleteExercise(exercise._id, exercise.name);
+                  }}
+                >
+                  Delete
+                </Button>
               )}
-            </VStack>
-          </Center>
+            </Center>
+          </Flex>
         </GridItem>
       );
     });
@@ -265,36 +276,28 @@ const ExerciseSelector = ({ toggle, setSelectedExercise }) => {
       <GridItem
         boxShadow="xl"
         rounded="xl"
-        borderRadius="5px"
+        borderRadius="20px"
         rowSpan={1}
         colStart={1}
         colEnd={{ base: 8, xl: 8 }}
       >
-        <Box p={4} width="100%">
+        <Box p={8}>
           <Text fontSize="xl" mb={4} ml={2} fontWeight="medium">
             Create an Exercise
           </Text>
           <form onSubmit={onSubmit}>
-            <VStack spacing={5}>
-              <Text
-                color="black"
-                fontSize={{ base: "md", md: "md", lg: "lg" }}
-                m={1}
-              >
-                Exercise Name
-              </Text>
+            <FormControl id="name" isInvalid={errors.name} pb={4}>
+              <FormLabel>Exercise Name</FormLabel>
               <Input
                 name="name"
                 placeholder="eg. Push Ups"
                 ref={register({ required: true })}
               />
-              <Text
-                color="black"
-                fontSize={{ base: "md", md: "md", lg: "lg" }}
-                m={1}
-              >
-                Category
-              </Text>
+              <FormErrorMessage>Please Enter a Name</FormErrorMessage>
+            </FormControl>
+
+            <FormControl id="category" isInvalid={errors.category} pb={4}>
+              <FormLabel>Exercise Category</FormLabel>
               <Select
                 name="category"
                 placeholder="Select Category"
@@ -306,30 +309,30 @@ const ExerciseSelector = ({ toggle, setSelectedExercise }) => {
                 <option value="Machine">Machine</option>
                 <option value="Cable">Cable</option>
               </Select>
-              <Text
-                color="black"
-                fontSize={{ base: "md", md: "md", lg: "lg" }}
-                m={1}
-              >
-                Body Part
-              </Text>
+              <FormErrorMessage>Please Select a Category</FormErrorMessage>
+            </FormControl>
+
+            <FormControl id="bodypart" isInvalid={errors.bodypart} pb={4}>
+              <FormLabel>Body Part</FormLabel>
               <Select
                 name="bodypart"
                 placeholder="Select Body Part"
                 ref={register({ required: true })}
               >
-                <option value="Core">Core</option>
-                <option value="Chest">Chest</option>
+                <option value="Legs">Legs</option>
                 <option value="Back">Back</option>
                 <option value="Biceps">Biceps</option>
+                <option value="Chest">Chest</option>
                 <option value="Triceps">Triceps</option>
                 <option value="Shoulders">Shoulders</option>
-                <option value="Legs">Legs</option>
+                <option value="Core">Core</option>
               </Select>
-              <Button p={4} colorScheme="teal" type="submit">
-                Add Exercise
-              </Button>
-            </VStack>
+              <FormErrorMessage>Please Select a Body Part</FormErrorMessage>
+            </FormControl>
+
+            <Button isFullWidth p={4} colorScheme="green" type="submit">
+              Add Exercise
+            </Button>
           </form>
         </Box>
       </GridItem>
@@ -339,60 +342,59 @@ const ExerciseSelector = ({ toggle, setSelectedExercise }) => {
   if (!user) {
     return (
       <Layout user="test">
-        <Skeleton height="33vh" />
-        <Skeleton height="33vh" />
-        <Skeleton height="33vh" />
+        <Skeleton height="100px" />
+        <Skeleton height="100px" />
+        <Skeleton height="100px" />
       </Layout>
     );
   }
 
   return (
     <Box
+      zIndex={20}
       bg="white"
       p={4}
       mb={{ base: 12, md: 0 }}
       ml={{ base: 0, md: 64 }}
       as="main"
       overflow="auto"
-      h={"full"}
+      h="full"
     >
       <Heading pt={12} ml={4}>
         Select an Exercise
       </Heading>
+
       <Grid
         padding={4}
+        pb={{ base: 24, md: 0 }}
         h="auto"
         autoRows="auto"
         templateColumns="repeat(6, 1fr)"
         gap={4}
       >
-        <GridItem rowSpan={1} colSpan={6}>
-          <Text fontSize="xl" mb={4} ml={2} fontWeight="medium">
-            Filter by Bodypart
-          </Text>
-          <Grid
-            padding={4}
-            h={{ base: "27rem", xl: " 16rem" }}
-            templateRows={{ base: "repeat(2, 1fr)", xl: "repeat(1, 1fr)" }}
-            templateColumns={{ base: "repeat(4, 1fr)", xl: "repeat(8, 1fr)" }}
-            gap={2}
-          >
-            {renderBodyPart("Core", "/images/abs.jpg")}
-            {renderBodyPart("Chest", "/images/chest.jpg")}
-            {renderBodyPart("Back", "/images/back.jpg")}
-            {renderBodyPart("Biceps", "/images/biceps.jpg")}
-            {renderBodyPart("Triceps", "/images/triceps.jpg")}
-            {renderBodyPart("Shoulders", "/images/shoulders.jpg")}
-            {renderBodyPart("Legs", "/images/legs.jpg")}
-            {renderBodyPart("All", "/images/all.jpg")}
-          </Grid>
-        </GridItem>
-
         {exercises ? renderExercises(exercises) : <Heading>Loading...</Heading>}
 
-        {/* Form */}
-
         <AddExerciseForm />
+      </Grid>
+      <Grid
+        p={2}
+        h="auto"
+        templateRows={{
+          base: "repeat(4, 1fr)",
+          sm: "repeat(2, 1fr)",
+          xl: "repeat(1, 1fr)",
+        }}
+        templateColumns={{ base: "repeat(4, 1fr)", xl: "repeat(8, 1fr)" }}
+        gap={4}
+      >
+        {renderBodyPart("All", "/images/all.jpg")}
+        {renderBodyPart("Legs", "/images/legs.jpg")}
+        {renderBodyPart("Chest", "/images/chest.jpg")}
+        {renderBodyPart("Triceps", "/images/triceps.jpg")}
+        {renderBodyPart("Back", "/images/back.jpg")}
+        {renderBodyPart("Biceps", "/images/biceps.jpg")}
+        {renderBodyPart("Shoulders", "/images/shoulders.jpg")}
+        {renderBodyPart("Core", "/images/abs.jpg")}
       </Grid>
     </Box>
   );
