@@ -93,22 +93,25 @@ export default function Home({ user, completedWorkouts, loadedWorkouts }) {
   return (
     <Layout user={user}>
       <Head>
-        <title>Next Workout</title>
+        <title>Pumpshock</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
       {user && (
         <Grid
           padding={4}
+          pb={12}
           h={{ base: "auto", md: "auto" }}
           autoRows="auto"
           templateColumns="repeat(6, 1fr)"
           gap={4}
         >
           <GridItem
+            p={4}
+            minH="20rem"
             boxShadow="xl"
             rounded="xl"
-            borderRadius="5px"
+            borderRadius="2-px"
             rowSpan={1}
             colSpan={{ base: 6, md: 3, xl: 3 }}
             onClick={() => router.push("/history")}
@@ -127,6 +130,8 @@ export default function Home({ user, completedWorkouts, loadedWorkouts }) {
             </Flex>
           </GridItem>
           <GridItem
+            p={4}
+            minH="20rem"
             boxShadow="xl"
             rounded="xl"
             borderRadius="5px"
@@ -148,6 +153,8 @@ export default function Home({ user, completedWorkouts, loadedWorkouts }) {
             </Flex>
           </GridItem>
           <GridItem
+            p={4}
+            minH="20rem"
             boxShadow="xl"
             rounded="xl"
             borderRadius="5px"

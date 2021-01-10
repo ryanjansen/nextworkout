@@ -26,7 +26,7 @@ const MenuItem = ({ children, href, icon, ...rest }) => {
           spacing={{ base: 2, md: 4 }}
           {...rest}
         >
-          <Icon as={icon} />
+          <Icon as={icon} color="#FFF" />
           <Text
             fontSize={{ base: "md", md: "2xl" }}
             fontWeight="medium"
@@ -48,7 +48,7 @@ export default function Layout({ user, children }) {
         <Flex
           as="nav"
           pos="fixed"
-          justify="space-around"
+          justify="space-evenly"
           align="center"
           direction={{ base: "row", md: "column" }}
           bottom={{ base: 0, md: null }}
@@ -56,10 +56,10 @@ export default function Layout({ user, children }) {
           h={{ base: 20, md: "100vh" }}
           w={{ base: "full", md: "2xs" }}
           textAlign="center"
-          bg="white"
-          borderTop={{ base: "1px", md: null }}
-          borderColor="gray.200"
-          boxShadow={{ base: "dark-lg", md: "none" }}
+          bg="#white"
+          borderTop={{ base: "1px", md: "none" }}
+          borderColor="gray.100"
+          boxShadow={{ base: "dark-lg", md: "xs" }}
           zIndex={60}
         >
           <Box display={{ base: "none", md: "block" }}>
@@ -77,7 +77,6 @@ export default function Layout({ user, children }) {
           <MenuItem href="/history" icon={GrHistory}>
             History
           </MenuItem>
-          <Divider mb={12} display={{ base: "none", md: "block" }} />
           <MenuItem href="/api/logout" icon={GrLogout}>
             Logout
           </MenuItem>

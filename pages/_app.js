@@ -4,8 +4,8 @@ import { Fonts } from "../public/Fonts";
 
 const theme = extendTheme({
   fonts: {
-    heading: "Archivo",
-    body: "Archivo",
+    heading: "Merriweather Sans",
+    body: "Merriweather Sans",
   },
 });
 

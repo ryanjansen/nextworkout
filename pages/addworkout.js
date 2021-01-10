@@ -154,6 +154,7 @@ export default function Workout({ exercises, user }) {
       console.log(data);
       setWorkout([]);
       toast({
+        position: "top",
         title: "New Workout Saved!",
         description: "You can find it under the 'workouts' page",
         status: "success",

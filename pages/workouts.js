@@ -187,6 +187,7 @@ export default function Workouts({ loadedWorkouts, user }) {
       console.log(data);
       setWorkouts(workouts.filter((w) => w._id !== workoutID));
       toast({
+        position: "top",
         title: "Workout Deleted",
         description: "Your workout had been deleted successfully",
         status: "success",

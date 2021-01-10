@@ -14,7 +14,6 @@ import {
   GridItem,
   Image,
   Center,
-  VStack,
   Button,
   Input,
   Select,
@@ -26,7 +25,6 @@ import {
   FormControl,
   FormLabel,
   FormErrorMessage,
-  FormHelperText,
 } from "@chakra-ui/react";
 import _ from "lodash";
 
@@ -214,6 +212,7 @@ const ExerciseSelector = ({ toggle, setSelectedExercise }) => {
           onClick={() => {
             setSelectedExercise(exercise);
             toggle();
+            window.scrollTo(0, 0);
           }}
         >
           <Flex>
