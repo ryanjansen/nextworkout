@@ -86,7 +86,7 @@ export default function Workout({ exercises, user }) {
           </Button>
         </HStack>
 
-        <Table variant="striped" colorScheme="yellow">
+        <Table variant="simple">
           <Thead>
             <Tr>
               <Th>Set</Th>
