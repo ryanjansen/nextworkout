@@ -295,6 +295,7 @@ const Exercises = () => {
                   Exercise Name
                 </Text>
                 <Input
+                  _hover
                   name="name"
                   placeholder="eg. Push Ups"
                   ref={register({ required: true })}
