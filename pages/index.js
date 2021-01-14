@@ -25,6 +25,7 @@ import {
   Flex,
   VStack,
   Center,
+  Container,
 } from "@chakra-ui/react";
 
 export default function Home({ user, completedWorkouts, loadedWorkouts }) {
@@ -210,6 +211,7 @@ export default function Home({ user, completedWorkouts, loadedWorkouts }) {
       )}
       {user && runningWorkout && (
         <WorkoutRunner
+          now={dayjs()}
           workout={runningWorkout}
           handleFinishWorkout={handleFinishWorkout}
         />

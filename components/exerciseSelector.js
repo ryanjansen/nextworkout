@@ -364,6 +364,24 @@ const ExerciseSelector = ({ toggle, setSelectedExercise }) => {
         Select an Exercise
       </Heading>
 
+      {selectedBodyPart === "All" ? (
+        <Text color="grey" ml={4}>
+          Currently displaying{" "}
+          <Text display="inline" color="black">
+            all exercises
+          </Text>
+          . You may choose a body part below or create your own exercise.
+        </Text>
+      ) : (
+        <Text color="grey" ml={4}>
+          Currently displaying exercises for{" "}
+          <Text display="inline" color="black">
+            {selectedBodyPart}
+          </Text>
+          . You may choose a body part below or create your own exercise.
+        </Text>
+      )}
+
       <Grid
         padding={4}
         pb={{ base: 24, md: 0 }}
