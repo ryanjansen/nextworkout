@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import Head from "next/head";
 import Layout from "../components/layout";
 import GraphQLClient from "../utils/graphQLClient";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import useSWR from "swr";
 import { getExercisesQuery } from "../graphql/queries";
 import { useRouter } from "next/router";
@@ -37,6 +37,11 @@ const ExerciseSelector = ({ toggle, setSelectedExercise }) => {
   const [exercises, setExercises] = useState();
   const [user, setUser] = useState();
   const [selectedBodyPart, setSelectedBodyPart] = useState("All");
+  const scrollRef = useRef(null);
+
+  const executeSroll = (ref) => {
+    ref.current.scrollIntoView({ behavior: "smooth" });
+  };
 
   const { data } = useSWR(getExercisesQuery, fetcher);
   const toast = createStandaloneToast();
@@ -84,6 +89,8 @@ const ExerciseSelector = ({ toggle, setSelectedExercise }) => {
         duration: 2000,
         isClosable: true,
       });
+      setSelectedBodyPart(exercise.bodypart);
+      executeSroll(scrollRef);
     } catch (error) {
       console.error(error);
     }
@@ -127,7 +134,10 @@ const ExerciseSelector = ({ toggle, setSelectedExercise }) => {
         _hover={{
           cursor: "pointer",
         }}
-        onClick={() => setSelectedBodyPart(bodypart)}
+        onClick={() => {
+          setSelectedBodyPart(bodypart);
+          executeSroll(scrollRef);
+        }}
       >
         <Center h={"100%"}>
           <Box
@@ -360,7 +370,7 @@ const ExerciseSelector = ({ toggle, setSelectedExercise }) => {
       overflow="auto"
       h="full"
     >
-      <Heading pt={12} ml={4}>
+      <Heading ref={scrollRef} pt={12} ml={4}>
         Select an Exercise
       </Heading>
 
