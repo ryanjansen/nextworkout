@@ -137,10 +137,6 @@ export default function Home({ user, completedWorkouts, loadedWorkouts }) {
             borderRadius="5px"
             rowSpan={1}
             colSpan={{ base: 6, md: 3, xl: 3 }}
-            onClick={() => router.push("/exercises")}
-            cursor="pointer"
-            transition="all 0.15s ease-out"
-            _hover={{ transform: "translateY(-5px)", boxShadow: "2xl" }}
           >
             <Heading m={1} size="lg">
               Favorite Exercises

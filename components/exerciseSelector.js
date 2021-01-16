@@ -43,8 +43,9 @@ const ExerciseSelector = ({ toggle, setSelectedExercise }) => {
     const getUser = async () => {
       const res = await fetch("/api/me");
       if (res.status == 200) {
-        const user = await res.json();
-        setUser(user);
+        const newUser = await res.json();
+        console.log(newUser);
+        setUser(newUser);
       } else {
         router.push("/");
       }
@@ -199,72 +200,75 @@ const ExerciseSelector = ({ toggle, setSelectedExercise }) => {
     };
 
     const renderedExerciseList = exerciseList.map((exercise) => {
-      return (
-        <GridItem
-          boxShadow="xl"
-          rounded="lg"
-          borderRadius="20px"
-          cursor="pointer"
-          transition="all 0.1s ease-out"
-          rowSpan={1}
-          colSpan={{ base: 6, md: 2 }}
-          _hover={{ transform: "translateY(-5px)", boxShadow: "2xl" }}
-          onClick={() => {
-            setSelectedExercise(exercise);
-            toggle();
-            window.scrollTo(0, 0);
-          }}
-        >
-          <Flex>
-            <Box pl={2} pt={2} pb={2}>
-              <Text fontSize={{ base: "xl", md: "xl", lg: "2xl" }} m={1}>
-                {exercise.name}
-              </Text>
-              <Text
-                color="grey"
-                fontSize={{ base: "md", md: "md", lg: "lg" }}
-                m={1}
-              >
-                {exercise.category}
-              </Text>
-              <Text
-                color="grey"
-                fontSize={{ base: "md", md: "md", lg: "lg" }}
-                m={1}
-              >
-                {exercise.bodypart}
-              </Text>
-            </Box>
-            <Spacer />
-            <Center
-              _hover={{ bg: "yellow.500" }}
-              transition="all 0.2s ease-out"
-              bg="#FFDD00"
-              p={2}
-              borderTopRightRadius="10px"
-              borderBottomRightRadius="10px"
-              pos="relative"
-            >
-              <Text fontSize="sm">Select</Text>
-              {exercise.user && (
-                <Button
-                  pos="absolute"
-                  size="xs"
-                  bottom="0"
-                  colorScheme="red"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleDeleteExercise(exercise._id, exercise.name);
-                  }}
+      if (!exercise.user || exercise.user._id === user.userID) {
+        return (
+          <GridItem
+            boxShadow="xl"
+            rounded="lg"
+            borderRadius="20px"
+            cursor="pointer"
+            transition="all 0.1s ease-out"
+            rowSpan={1}
+            colSpan={{ base: 6, md: 2 }}
+            _hover={{ transform: "translateY(-5px)", boxShadow: "2xl" }}
+            onClick={() => {
+              setSelectedExercise(exercise);
+              toggle();
+              window.scrollTo(0, 0);
+            }}
+          >
+            <Flex>
+              <Box pl={2} pt={2} pb={2}>
+                <Text fontSize={{ base: "xl", md: "xl", lg: "2xl" }} m={1}>
+                  {exercise.name}
+                </Text>
+                <Text
+                  color="grey"
+                  fontSize={{ base: "md", md: "md", lg: "lg" }}
+                  m={1}
                 >
-                  Delete
-                </Button>
-              )}
-            </Center>
-          </Flex>
-        </GridItem>
-      );
+                  {exercise.category}
+                </Text>
+                <Text
+                  color="grey"
+                  fontSize={{ base: "md", md: "md", lg: "lg" }}
+                  m={1}
+                >
+                  {exercise.bodypart}
+                </Text>
+              </Box>
+              <Spacer />
+              <Center
+                _hover={{ bg: "yellow.500" }}
+                transition="all 0.2s ease-out"
+                bg="#FFDD00"
+                p={2}
+                borderTopRightRadius="10px"
+                borderBottomRightRadius="10px"
+                pos="relative"
+              >
+                <Text fontSize="sm">Select</Text>
+                {exercise.user && (
+                  <Button
+                    pos="absolute"
+                    size="xs"
+                    bottom="0"
+                    colorScheme="red"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeleteExercise(exercise._id, exercise.name);
+                    }}
+                  >
+                    Delete
+                  </Button>
+                )}
+              </Center>
+            </Flex>
+          </GridItem>
+        );
+      }
     });
+
     return renderedExerciseList.length != 0
       ? renderedExerciseList
       : noExercises();
