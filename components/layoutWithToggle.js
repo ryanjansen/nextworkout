@@ -44,9 +44,21 @@ const MenuItem = ({ children, href, icon, ...rest }) => {
 };
 
 export default function Layout({ user, children }) {
-  if (user) {
+  const [isVisible, setIsVisible] = useState(true);
+
+  if (user && isVisible) {
     return (
       <Box minH="100vh">
+        <CloseIcon
+          display={{ base: "none", md: "unset" }}
+          zIndex={70}
+          pos="fixed"
+          left={1}
+          top={1}
+          boxSize="1rem"
+          _hover={{ cursor: "pointer" }}
+          onClick={() => setIsVisible(false)}
+        />
         <Flex
           as="nav"
           pos="fixed"
@@ -74,8 +86,8 @@ export default function Layout({ user, children }) {
             Workouts
           </MenuItem>
           {/* <MenuItem href="/exercises" icon={IoBarbell}>
-            Exercises
-          </MenuItem> */}
+              Exercises
+            </MenuItem> */}
           <MenuItem href="/history" icon={GrHistory}>
             History
           </MenuItem>
@@ -89,6 +101,20 @@ export default function Layout({ user, children }) {
           {children}
         </Box>
       </Box>
+    );
+  } else if (user && !isVisible) {
+    return (
+      <>
+        <HamburgerIcon
+          display={{ base: "none", md: "unset" }}
+          boxSize="2rem"
+          _hover={{ cursor: "pointer" }}
+          onClick={() => setIsVisible(true)}
+        />
+        <Box p={4} mb={{ base: 0, md: 0 }} ml={{ base: 0, md: 0 }} as="main">
+          {children}
+        </Box>
+      </>
     );
   } else {
     return (

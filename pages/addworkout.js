@@ -52,7 +52,7 @@ export default function Workout({ exercises, user }) {
   const [selectedExercise, setSelectedExercise] = useState("");
   const [exerciseSets, setExerciseSets] = useState([{ reps: 1, weight: 0 }]);
   const [workout, setWorkout] = useState([]);
-  const [workoutName, setWorkoutName] = useState("New Workout");
+  const [workoutName, setWorkoutName] = useState("");
   const [showExerciseSelector, setShowExerciseSelector] = useState(false);
 
   const toast = createStandaloneToast();
@@ -144,7 +144,7 @@ export default function Workout({ exercises, user }) {
     // Save workout to database
 
     const { mutation, variables } = createWorkout(
-      workoutName,
+      workoutName === "" ? "New Workout" : workoutName,
       user.userID,
       workout
     );
@@ -160,7 +160,7 @@ export default function Workout({ exercises, user }) {
         duration: 5000,
         isClosable: true,
       });
-      setWorkoutName("New Workout");
+      setWorkoutName("");
     } catch (error) {
       console.error(error);
     }
@@ -335,6 +335,7 @@ export default function Workout({ exercises, user }) {
                 <HStack>
                   <Input
                     p={4}
+                    placeholder="New Workout"
                     value={workoutName}
                     onChange={(e) => setWorkoutName(e.target.value)}
                     fontSize="3xl"
