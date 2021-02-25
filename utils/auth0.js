@@ -5,8 +5,8 @@ export default initAuth0({
   clientId: process.env.CLIENT_ID,
   clientSecret: process.env.CLIENT_SECRET,
   scope: "openid profile",
-  redirectUri: "https://www.pumpshock.netlify.app/api/callback",
-  postLogoutRedirectUri: "https://www.pumpshock.netlify.app/",
+  redirectUri: "https://pumpshock.netlify.app/api/callback",
+  postLogoutRedirectUri: "https://pumpshock.netlify.app/",
   session: {
     // The secret used to encrypt the cookie.
     cookieSecret: process.env.COOKIE_SECRET,
