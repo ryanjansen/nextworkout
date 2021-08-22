@@ -5,8 +5,8 @@ export default initAuth0({
   clientId: process.env.CLIENT_ID,
   clientSecret: process.env.CLIENT_SECRET,
   scope: "openid profile",
-  redirectUri: "https://pumpshock-aipts0vwg-rjman444.vercel.app/api/callback",
-  postLogoutRedirectUri: "https://pumpshock-aipts0vwg-rjman444.vercel.app/",
+  redirectUri: "https://pumpshock.vercel.app/api/callback",
+  postLogoutRedirectUri: "https://pumpshock.vercel.app/",
   session: {
     // The secret used to encrypt the cookie.
     cookieSecret: process.env.COOKIE_SECRET,
